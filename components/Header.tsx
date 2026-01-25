@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import HoverMenu from './HoverMenu';
+import ProjectDetailsCard from './ProjectDetailsCard';
+import BookmarksMenu from './FavoritesMenu';
+import Tooltip from './Tooltip';
 
 // --- Icon Definitions ---
 
@@ -33,10 +36,10 @@ const MenuIconWrapper: React.FC<{ children: React.ReactNode; className?: string 
 
 // Base wrapper for large main category icons
 const MainIconWrapper: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
-    <div className="relative w-[42px] h-[42px] flex items-center justify-center cursor-pointer">
-        <div className={`absolute w-12 h-12 rounded-md transform -rotate-6 shadow-lg ${className} opacity-80`}></div>
-        <div className={`absolute w-12 h-12 rounded-md transform rotate-6 shadow-lg ${className} opacity-90`}></div>
-        <div className={`absolute w-[42px] h-[42px] rounded-md flex items-center justify-center shadow-2xl ${className}`}>
+    <div className="relative w-[30.6px] h-[30.6px] flex items-center justify-center cursor-pointer">
+        <div className={`absolute w-[34px] h-[34px] rounded-md transform -rotate-6 shadow-lg ${className} opacity-80`}></div>
+        <div className={`absolute w-[34px] h-[34px] rounded-md transform rotate-6 shadow-lg ${className} opacity-90`}></div>
+        <div className={`absolute w-[30.6px] h-[30.6px] rounded-md flex items-center justify-center shadow-2xl ${className}`}>
              <NavIconWrapper className="text-white">
                 {children}
             </NavIconWrapper>
@@ -90,6 +93,7 @@ const ChatIcon = () => <NavIconWrapper><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 
 const HelpIcon = () => <NavIconWrapper><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></NavIconWrapper>;
 const BellIcon = () => <NavIconWrapper><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></NavIconWrapper>;
 const MenuIcon = () => <NavIconWrapper><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="18" x2="20" y2="18"></line></NavIconWrapper>;
+const XIcon = () => <NavIconWrapper><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></NavIconWrapper>;
 
 
 // --- Main Category Icons ---
@@ -99,6 +103,7 @@ const QualityMainIcon = () => <MainIconWrapper className="bg-rose-500"><polyline
 const FinanceMainIcon = () => <MainIconWrapper className="bg-green-500"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></MainIconWrapper>;
 const FieldOpsMainIcon = () => <MainIconWrapper className="bg-amber-500"><path d="M20.5 14.5A4.5 4.5 0 0 0 21 12V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6c0 1.2.4 2.4 1.2 3.2L7 18.5V21h10v-2.5l2.8-2.8H21z"/><path d="M7 15h10"/></MainIconWrapper>;
 const DocumentationMainIcon = () => <MainIconWrapper className="bg-cyan-500"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></MainIconWrapper>;
+const BookmarksMainIcon = () => <MainIconWrapper className="bg-yellow-500"><path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></MainIconWrapper>;
 
 // --- Navigation Data Structure ---
 
@@ -289,21 +294,24 @@ const ProjectSelector: React.FC<ProjectSelectorProps> = ({ projects, selectedPro
     }, [selectorRef]);
 
     return (
-        <div className="relative pl-2" ref={selectorRef}>
-            <button 
-                onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-2 px-3 py-0.5 text-[12.25px] bg-transparent hover:bg-gray-700/50 rounded-md transition-colors border border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-cyan-500 shrink-0"
-                aria-haspopup="listbox"
-                aria-expanded={isOpen}
-            >
-                <span className="font-semibold text-white whitespace-nowrap">{selectedProject.name}</span>
-                <motion.div
-                    animate={{ rotate: isOpen ? 180 : 0 }}
-                    transition={{ duration: 0.2 }}
+        <Tooltip content={`Project: ${selectedProject.name}`} position="bottom" delay={400} disabled={isOpen}>
+            <div className="relative" ref={selectorRef}>
+                <button 
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="flex items-center gap-1.5 px-2 py-1 text-[12.25px] bg-transparent hover:bg-gray-700/50 rounded-md transition-all border border-transparent hover:border-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-cyan-500 touch-manipulation group"
+                    aria-haspopup="listbox"
+                    aria-expanded={isOpen}
+                    aria-label="Select project"
                 >
-                    <ChevronDownIcon className="w-4 h-4 text-gray-400" />
-                </motion.div>
-            </button>
+                    <span className="text-gray-300 text-[11.5px] font-medium uppercase tracking-wide whitespace-nowrap">Project:</span>
+                    <span className="font-semibold text-white whitespace-nowrap">{selectedProject.name}</span>
+                    <motion.div
+                        animate={{ rotate: isOpen ? 180 : 0 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        <ChevronDownIcon className="w-4 h-4 text-gray-300 group-hover:text-white transition-colors" />
+                    </motion.div>
+                </button>
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
@@ -311,13 +319,13 @@ const ProjectSelector: React.FC<ProjectSelectorProps> = ({ projects, selectedPro
                         animate={{ opacity: 1, y: 5 }}
                         exit={{ opacity: 0, y: -5 }}
                         transition={{ duration: 0.15, ease: "easeOut" }}
-                        className="absolute z-10 w-max min-w-full mt-1 bg-[#2a2a2a] border border-gray-600 rounded-md shadow-lg"
+                        className="absolute z-10 left-0 md:left-auto right-0 md:right-auto w-[calc(100vw-4rem)] md:w-max md:min-w-full mt-1 bg-[#2a2a2a] border border-gray-600 rounded-md shadow-lg max-w-[280px] md:max-w-none"
                     >
                         <ul className="p-1" role="listbox">
                             {projects.map(project => (
                                 <li 
                                     key={project.id}
-                                    className="text-[12.25px] text-gray-200 rounded-sm hover:bg-cyan-600 hover:text-white cursor-pointer"
+                                    className="text-[12.25px] text-gray-200 rounded-sm hover:bg-cyan-600 hover:text-white cursor-pointer touch-manipulation min-h-[44px] flex items-center"
                                     onClick={() => {
                                         onSelectProject(project);
                                         setIsOpen(false);
@@ -325,7 +333,7 @@ const ProjectSelector: React.FC<ProjectSelectorProps> = ({ projects, selectedPro
                                     role="option"
                                     aria-selected={project.id === selectedProject.id}
                                 >
-                                    <div className="flex items-center justify-between px-2 py-1">
+                                    <div className="flex items-center justify-between px-3 py-2 md:px-2 md:py-1 w-full">
                                         <span>{project.name}</span>
                                         {project.id === selectedProject.id && <CheckIcon className="w-4 h-4"/>}
                                     </div>
@@ -335,34 +343,123 @@ const ProjectSelector: React.FC<ProjectSelectorProps> = ({ projects, selectedPro
                     </motion.div>
                 )}
             </AnimatePresence>
-        </div>
+            </div>
+        </Tooltip>
     );
 };
 
 
 type StandardCategoryKey = Exclude<keyof typeof navigationData, 'more'>;
+type CategoryKeyWithBookmarks = StandardCategoryKey | 'bookmarks';
 
-const categoryAbbreviations: { [key in StandardCategoryKey]: string } = {
+const categoryAbbreviations: { [key in CategoryKeyWithBookmarks]: string } = {
     projectManagement: 'PM',
     collaboration: 'Team',
     quality: 'Quality',
     finance: 'Finance',
     fieldOps: 'Field',
     documentation: 'Docs',
+    bookmarks: 'Bookmarks',
 };
 
 interface HeaderProps {
     onSelectionChange: (title: string) => void;
 }
 
+// Bookmarks management with localStorage
+const BOOKMARKS_STORAGE_KEY = 'linarc-bookmarks';
+
+const useBookmarks = () => {
+    const [bookmarks, setBookmarks] = useState<Set<string>>(() => {
+        if (typeof window !== 'undefined') {
+            const stored = localStorage.getItem(BOOKMARKS_STORAGE_KEY);
+            return stored ? new Set(JSON.parse(stored)) : new Set();
+        }
+        return new Set();
+    });
+
+    const toggleBookmark = (categoryKey: string, itemKey: string) => {
+        const bookmarkKey = `${categoryKey}:${itemKey}`;
+        setBookmarks(prev => {
+            const newBookmarks = new Set(prev);
+            if (newBookmarks.has(bookmarkKey)) {
+                newBookmarks.delete(bookmarkKey);
+            } else {
+                newBookmarks.add(bookmarkKey);
+            }
+            if (typeof window !== 'undefined') {
+                localStorage.setItem(BOOKMARKS_STORAGE_KEY, JSON.stringify(Array.from(newBookmarks)));
+            }
+            return newBookmarks;
+        });
+    };
+
+    const getBookmarkItems = (navigationData: { [key: string]: CategoryData }): Array<{
+        categoryKey: string;
+        itemKey: string;
+        label: string;
+        description: string;
+        icon: React.ReactNode;
+        navIcon: React.ReactNode;
+    }> => {
+        const bookmarkItems: Array<{
+            categoryKey: string;
+            itemKey: string;
+            label: string;
+            description: string;
+            icon: React.ReactNode;
+            navIcon: React.ReactNode;
+        }> = [];
+
+        bookmarks.forEach(bookmarkKey => {
+            const [categoryKey, itemKey] = bookmarkKey.split(':');
+            const category = navigationData[categoryKey];
+            if (category && 'items' in category && category.key !== 'more') {
+                const standardCategory = category as StandardCategoryData;
+                const item: PrimaryMenuItemData | undefined = standardCategory.items.find((i: PrimaryMenuItemData) => i.key === itemKey);
+                if (item) {
+                    bookmarkItems.push({
+                        categoryKey,
+                        itemKey,
+                        label: item.label,
+                        description: item.description,
+                        icon: item.icon,
+                        navIcon: item.navIcon,
+                    });
+                }
+            }
+        });
+
+        return bookmarkItems;
+    };
+
+    return { bookmarks, toggleBookmark, getBookmarkItems };
+};
+
 const Header: React.FC<HeaderProps> = ({ onSelectionChange }) => {
     const [isMenuVisible, setMenuVisible] = useState(false);
-    const [isActionsMenuOpen, setIsActionsMenuOpen] = useState(false);
+    const [isBookmarksMenuVisible, setBookmarksMenuVisible] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isMobileProjectSelectorOpen, setIsMobileProjectSelectorOpen] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
     const [activeCategoryKey, setActiveCategoryKey] = useState<StandardCategoryKey>('documentation');
     const [activeSubcategoryKey, setActiveSubcategoryKey] = useState<string>('document');
     const [selectedProject, setSelectedProject] = useState<Project>(projects[0]);
-    const menuTriggerRef = useRef<HTMLDivElement>(null);
-    const actionsMenuRef = useRef<HTMLDivElement>(null);
+    const mobileMenuRef = useRef<HTMLDivElement>(null);
+    const mobileProjectSelectorRef = useRef<HTMLDivElement>(null);
+    const hoverMenuRef = useRef<HTMLDivElement>(null);
+    const bookmarksMenuRef = useRef<HTMLDivElement>(null);
+    const { bookmarks, toggleBookmark, getBookmarkItems } = useBookmarks();
+
+    // Detect mobile device
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     const categoryColors: { [key: string]: string } = {
         projectManagement: 'text-orange-500',
@@ -371,7 +468,10 @@ const Header: React.FC<HeaderProps> = ({ onSelectionChange }) => {
         finance: 'text-green-500',
         fieldOps: 'text-amber-500',
         documentation: 'text-cyan-500',
+        bookmarks: 'text-yellow-500',
     };
+
+    const bookmarkItems = getBookmarkItems(navigationData);
 
     // FIX: Add type guard to safely access properties on `category`.
     // This ensures `category` is a `StandardCategoryData` before we try to find an item in its `items` array.
@@ -389,30 +489,62 @@ const Header: React.FC<HeaderProps> = ({ onSelectionChange }) => {
             }
         }
         setMenuVisible(false);
+        setBookmarksMenuVisible(false);
     };
 
     const handleProjectSelect = (project: Project) => {
         setSelectedProject(project);
     };
 
-    // Handle click outside to close menus on mobile
+    // Close mobile menu on outside click or ESC key
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (menuTriggerRef.current && !menuTriggerRef.current.contains(event.target as Node)) {
+            if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+                setIsMobileMenuOpen(false);
+            }
+            // Close mobile project selector when clicking outside
+            if (mobileProjectSelectorRef.current && !mobileProjectSelectorRef.current.contains(event.target as Node)) {
+                setIsMobileProjectSelectorOpen(false);
+            }
+            // Close hover menu on mobile when clicking outside
+            if (isMobile && hoverMenuRef.current && !hoverMenuRef.current.contains(event.target as Node)) {
                 setMenuVisible(false);
             }
-            if (actionsMenuRef.current && !actionsMenuRef.current.contains(event.target as Node)) {
-                setIsActionsMenuOpen(false);
+            // Close bookmarks menu when clicking outside
+            if (bookmarksMenuRef.current && !bookmarksMenuRef.current.contains(event.target as Node)) {
+                setBookmarksMenuVisible(false);
             }
         };
 
-        if (isMenuVisible || isActionsMenuOpen) {
+        const handleEscape = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                setIsMobileMenuOpen(false);
+                setIsMobileProjectSelectorOpen(false);
+                if (isMobile) {
+                    setMenuVisible(false);
+                }
+            }
+        };
+
+        if (isMobileMenuOpen || isMobileProjectSelectorOpen) {
             document.addEventListener('mousedown', handleClickOutside);
-            return () => {
-                document.removeEventListener('mousedown', handleClickOutside);
-            };
+            document.addEventListener('keydown', handleEscape);
+            if (isMobileMenuOpen) {
+                document.body.style.overflow = 'hidden'; // Prevent body scroll when menu is open
+            }
+        } else if (isMobile && isMenuVisible) {
+            document.addEventListener('mousedown', handleClickOutside);
+            document.addEventListener('keydown', handleEscape);
         }
-    }, [isMenuVisible, isActionsMenuOpen]);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('keydown', handleEscape);
+            if (isMobileMenuOpen) {
+                document.body.style.overflow = '';
+            }
+        };
+    }, [isMobileMenuOpen, isMobileProjectSelectorOpen, isMobile, isMenuVisible, isBookmarksMenuVisible]);
 
     const activeCategory = navigationData[activeCategoryKey];
 
@@ -428,141 +560,460 @@ const Header: React.FC<HeaderProps> = ({ onSelectionChange }) => {
     const activeColor = categoryColors[activeCategoryKey] || 'text-white';
 
     return (
-        <header className="bg-[#1e1e1e] text-white font-['Lato'] shadow-lg h-[96px]">
-            <div className="pl-2 pr-4 pt-3.5 pb-2 flex flex-col gap-y-3 h-full">
-                {/* Top Row for main navigation and actions */}
-                <div className="flex justify-between items-center">
-                    {/* Left & Center Nav Items */}
-                    <div className="flex items-center gap-x-4 h-[42px]">
-                        <div 
-                            ref={menuTriggerRef}
-                            className="relative h-11 w-[76px] flex justify-center items-center cursor-pointer"
-                            onMouseEnter={() => setMenuVisible(true)}
-                            onMouseLeave={() => setMenuVisible(false)}
-                            onClick={() => setMenuVisible(!isMenuVisible)}
-                        >
+        <header className="bg-[#1e1e1e] text-white font-['Lato'] shadow-lg min-h-[80px] md:h-[80px] border-b-[3px] border-gray-800">
+            <div className="pl-2 pr-2 md:pr-0 pt-2 pb-2 flex items-center h-full">
+                {/* Left & Center Nav Items */}
+                <div className="flex items-center gap-x-4 md:gap-x-6 flex-1 min-w-0">
+                    {/* Main Category Menu */}
+                    <div 
+                        ref={hoverMenuRef}
+                        className="relative flex flex-col items-center gap-1 px-2 py-1 rounded-md hover:bg-gray-800/50 transition-colors cursor-pointer group shrink-0"
+                        style={{ width: '74px' }}
+                        onMouseEnter={() => {
+                            if (!isMobile) {
+                                setMenuVisible(true);
+                                setBookmarksMenuVisible(false);
+                            }
+                        }}
+                        onMouseLeave={() => !isMobile && setMenuVisible(false)}
+                        onClick={() => {
+                            if (isMobile) {
+                                setMenuVisible(!isMenuVisible);
+                                setBookmarksMenuVisible(false);
+                            }
+                        }}
+                        role="button"
+                        aria-haspopup="true"
+                        aria-expanded={isMenuVisible}
+                        aria-label={`${activeCategory.title} menu`}
+                    >
+                        <div className="relative flex items-center justify-center">
                             {activeCategory.mainIcon}
-                            <div className="absolute top-full h-4 w-full" />
-                            <AnimatePresence>
-                                {isMenuVisible && 
-                                    <HoverMenu 
-                                        navigationData={navigationData}
-                                        menuLayout={menuLayout}
-                                        onSelect={handleSelect}
-                                    />
-                                }
-                            </AnimatePresence>
+                            <motion.div
+                                animate={{ rotate: isMenuVisible ? 180 : 0 }}
+                                transition={{ duration: 0.2 }}
+                                className="absolute -bottom-1 bg-[#1e1e1e] rounded-full p-0.5"
+                                style={{ right: '-14px' }}
+                            >
+                                <ChevronDownIcon className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" style={{ marginLeft: '0px', marginRight: '0px' }} />
+                            </motion.div>
                         </div>
-                        <nav>
-                            <ul className="flex items-center gap-x-4 md:gap-x-8 lg:gap-x-16">
-                                {navItems.map((item) => (
-                                    <li key={item.key}>
-                                        <NavItem 
-                                            icon={item.navIcon} 
-                                            label={item.label}
-                                            isActive={item.key === activeSubcategoryKey}
-                                            activeColor={activeColor}
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                setActiveSubcategoryKey(item.key);
-                                                onSelectionChange(`${activeCategory.title} / ${item.label}`);
-                                            }}
-                                        />
-                                    </li>
-                                ))}
-                            </ul>
-                        </nav>
+                        <span className="text-[11px] font-medium text-white whitespace-nowrap">{categoryAbbreviations[activeCategoryKey]}</span>
+                        <div className="absolute top-full h-4 w-full" />
+                        <AnimatePresence>
+                            {isMenuVisible && 
+                                <HoverMenu 
+                                    navigationData={navigationData}
+                                    menuLayout={menuLayout}
+                                    onSelect={handleSelect}
+                                    bookmarks={bookmarks}
+                                    onToggleBookmark={toggleBookmark}
+                                />
+                            }
+                        </AnimatePresence>
+                    </div>
+                    {/* Bookmarks Button */}
+                    <div 
+                        ref={bookmarksMenuRef}
+                        className="relative flex flex-col items-center gap-1 px-2 py-1 rounded-md hover:bg-gray-700/50 transition-colors cursor-pointer group shrink-0"
+                        onMouseEnter={() => {
+                            if (!isMobile) {
+                                setBookmarksMenuVisible(true);
+                                setMenuVisible(false);
+                            }
+                        }}
+                        onMouseLeave={() => !isMobile && setBookmarksMenuVisible(false)}
+                        onClick={() => {
+                            if (isMobile) {
+                                setBookmarksMenuVisible(!isBookmarksMenuVisible);
+                                setMenuVisible(false);
+                            }
+                        }}
+                        role="button"
+                        aria-haspopup="true"
+                        aria-expanded={isBookmarksMenuVisible}
+                        aria-label="Bookmarks menu"
+                    >
+                        <div className="relative flex items-center justify-center">
+                            <BookmarksMainIcon />
+                            <motion.div
+                                animate={{ rotate: isBookmarksMenuVisible ? 180 : 0 }}
+                                transition={{ duration: 0.2 }}
+                                className="absolute -bottom-1 bg-[#1e1e1e] rounded-full p-0.5"
+                                style={{ right: '-12px' }}
+                            >
+                                <ChevronDownIcon className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" style={{ marginLeft: '0px', marginRight: '0px' }} />
+                            </motion.div>
+                        </div>
+                        <span className="text-[11px] font-medium text-white whitespace-nowrap">{categoryAbbreviations.bookmarks}</span>
+                        <div className="absolute top-full h-4 w-full" />
+                        <AnimatePresence>
+                            {isBookmarksMenuVisible && 
+                                <BookmarksMenu 
+                                    bookmarks={bookmarkItems}
+                                    onSelect={handleSelect}
+                                    onToggleBookmark={toggleBookmark}
+                                />
+                            }
+                        </AnimatePresence>
+                    </div>
+                    <nav className="hidden md:block flex-1 min-w-0">
+                        <ul className="flex items-center gap-x-5 lg:gap-x-7 xl:gap-x-8">
+                            {navItems.map((item) => (
+                                <li key={item.key}>
+                                    <NavItem 
+                                        icon={item.navIcon} 
+                                        label={item.label}
+                                        isActive={item.key === activeSubcategoryKey}
+                                        activeColor={activeColor}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setActiveSubcategoryKey(item.key);
+                                            onSelectionChange(`${activeCategory.title} / ${item.label}`);
+                                        }}
+                                    />
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+                </div>
+
+                {/* Mobile Project Selector Button */}
+                <div className="md:hidden relative" ref={mobileProjectSelectorRef}>
+                    <Tooltip content={`Project: ${selectedProject.name}`} position="bottom" delay={400} disabled={isMobileProjectSelectorOpen}>
+                        <button
+                            onClick={() => {
+                                setIsMobileProjectSelectorOpen(!isMobileProjectSelectorOpen);
+                                setIsMobileMenuOpen(false);
+                            }}
+                            className="text-gray-300 hover:text-white transition-colors duration-200 touch-manipulation p-2 -mr-2"
+                            aria-label="Select project"
+                            aria-expanded={isMobileProjectSelectorOpen}
+                        >
+                            <ProjectIcon />
+                        </button>
+                    </Tooltip>
+                    
+                    {/* Mobile Project Selector Dropdown */}
+                    <AnimatePresence>
+                        {isMobileProjectSelectorOpen && (
+                            <>
+                                {/* Backdrop */}
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.2 }}
+                                    className="fixed inset-0 bg-black/50 z-40 md:hidden"
+                                    onClick={() => setIsMobileProjectSelectorOpen(false)}
+                                />
+                                
+                                {/* Dropdown Panel */}
+                                <motion.div
+                                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                                    transition={{ duration: 0.2, ease: "easeOut" }}
+                                    className="fixed right-2 top-[90px] w-[calc(100vw-1rem)] max-w-[320px] bg-[#2a2a2a] border border-gray-600 rounded-lg shadow-xl z-50 md:hidden max-h-[calc(100vh-110px)] overflow-y-auto"
+                                >
+                                    {/* Project Selection */}
+                                    <div className="p-3 border-b border-gray-700">
+                                        <div className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Select Project</div>
+                                        <ul className="space-y-1">
+                                            {projects.map(project => (
+                                                <li 
+                                                    key={project.id}
+                                                    className="text-sm text-gray-200 rounded-md hover:bg-cyan-600 hover:text-white cursor-pointer touch-manipulation min-h-[44px] flex items-center"
+                                                    onClick={() => {
+                                                        handleProjectSelect(project);
+                                                        setIsMobileProjectSelectorOpen(false);
+                                                    }}
+                                                    role="option"
+                                                    aria-selected={project.id === selectedProject.id}
+                                                >
+                                                    <div className="flex items-center justify-between px-3 py-2.5 w-full">
+                                                        <span className="font-medium">{project.name}</span>
+                                                        {project.id === selectedProject.id && <CheckIcon className="w-4 h-4 text-cyan-500"/>}
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                    
+                                    {/* Project Details */}
+                                    <div className="p-3 space-y-3">
+                                        <div className="text-xs font-medium text-gray-400 uppercase tracking-wide">Project Details</div>
+                                        <div className="space-y-2.5 text-[12.25px]">
+                                            {selectedProject.details[0] && (
+                                                <div className="flex items-start gap-2.5">
+                                                    <div className="mt-0.5 text-gray-500 shrink-0">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                                            <circle cx="12" cy="10" r="3"></circle>
+                                                        </svg>
+                                                    </div>
+                                                    <div className="text-gray-300 flex-1">
+                                                        <div className="font-medium text-gray-400 mb-0.5 text-[11px]">Address</div>
+                                                            <div className="text-[12px]">{selectedProject.details[0]}</div>
+                                                        </div>
+                                                </div>
+                                            )}
+                                            {selectedProject.details[1] && (
+                                                <div className="flex items-start gap-2.5">
+                                                    <div className="mt-0.5 text-gray-500 shrink-0">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                            <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"></path>
+                                                            <path d="M6 12h4"></path>
+                                                            <path d="M6 16h4"></path>
+                                                            <path d="M10 4h4"></path>
+                                                            <path d="M10 8h4"></path>
+                                                            <path d="M10 12h4"></path>
+                                                            <path d="M10 16h4"></path>
+                                                        </svg>
+                                                    </div>
+                                                    <div className="text-gray-300 flex-1">
+                                                        <div className="font-medium text-gray-400 mb-0.5 text-[11px]">Owner</div>
+                                                        <div className="text-[12px]">{selectedProject.details[1].replace('Owner - ', '')}</div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {selectedProject.details[2] && (
+                                                <div className="flex items-start gap-2.5">
+                                                    <div className="mt-0.5 text-gray-500 shrink-0">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                            <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"></path>
+                                                            <path d="M6 12h4"></path>
+                                                            <path d="M6 16h4"></path>
+                                                            <path d="M10 4h4"></path>
+                                                            <path d="M10 8h4"></path>
+                                                            <path d="M10 12h4"></path>
+                                                            <path d="M10 16h4"></path>
+                                                        </svg>
+                                                    </div>
+                                                    <div className="text-gray-300 flex-1">
+                                                        <div className="font-medium text-gray-400 mb-0.5 text-[11px]">General Contractor</div>
+                                                        <div className="text-[12px]">{selectedProject.details[2].replace('GC - ', '')}</div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {selectedProject.details[3] && (
+                                                <div className="flex items-start gap-2.5">
+                                                    <div className="mt-0.5 text-gray-500 shrink-0">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                            <circle cx="12" cy="7" r="4"></circle>
+                                                        </svg>
+                                                    </div>
+                                                    <div className="text-gray-300 flex-1">
+                                                        <div className="font-medium text-gray-400 mb-0.5 text-[11px]">Project Manager</div>
+                                                        <div className="text-[12px]">{selectedProject.details[3].replace('PM - ', '')}</div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {selectedProject.details[4] && (
+                                                <div className="flex items-start gap-2.5">
+                                                    <div className="mt-0.5 text-gray-500 shrink-0">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                                        </svg>
+                                                    </div>
+                                                    <div className="text-gray-300 flex-1">
+                                                        <div className="font-medium text-gray-400 mb-0.5 text-[11px]">Phone</div>
+                                                        <div className="text-[12px]">{selectedProject.details[4]}</div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            </>
+                        )}
+                    </AnimatePresence>
+                </div>
+
+                {/* Hamburger Menu Button - Mobile Only */}
+                <button
+                    onClick={() => {
+                        setIsMobileMenuOpen(true);
+                        setIsMobileProjectSelectorOpen(false);
+                    }}
+                    className="md:hidden text-gray-300 hover:text-white transition-colors duration-200 touch-manipulation p-2 -mr-2"
+                    aria-label="Open menu"
+                    aria-expanded={isMobileMenuOpen}
+                >
+                    <MenuIcon />
+                </button>
+
+                {/* Right Section: Action Icons + Project Panel */}
+                <div className="hidden md:flex items-center h-full shrink-0">
+                    {/* Project Panel */}
+                    <div className="flex items-center gap-2 pr-3 lg:pr-4 pl-2.5 bg-[#252525]/50 rounded-lg border border-gray-700/50 py-1.5">
+                        <ProjectSelector
+                            projects={projects}
+                            selectedProject={selectedProject}
+                            onSelectProject={handleProjectSelect}
+                        />
+                        <ProjectDetailsCard project={selectedProject} />
                     </div>
 
-                    {/* Right Action Icons */}
-                    <div ref={actionsMenuRef} className="relative flex items-center pr-2">
-                        {/* Desktop: Show all icons */}
-                        <div className="hidden lg:flex items-center gap-x-8">
-                            <button className="text-gray-300 hover:text-white transition-colors duration-200" aria-label="Search"><SearchIcon /></button>
-                            <button className="text-gray-300 hover:text-white transition-colors duration-200" aria-label="Chat"><ChatIcon /></button>
-                            <button className="text-gray-300 hover:text-white transition-colors duration-200" aria-label="Help"><HelpIcon /></button>
-                            <button className="text-gray-300 hover:text-white transition-colors duration-200" aria-label="Notifications"><BellIcon /></button>
-                            <div className="w-10 h-10 rounded-full bg-black border border-gray-600 flex items-center justify-center">
-                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-white">
+                    {/* Vertical Divider */}
+                    <div className="h-7 w-px bg-gray-700 ml-3 lg:ml-4 mr-3 lg:mr-4"></div>
+
+                    {/* Action Icons */}
+                    <div className="flex items-center gap-x-3 lg:gap-x-4 pr-3 lg:pr-4">
+                        <Tooltip content="Search" position="bottom" delay={400}>
+                            <button className="text-gray-300 hover:text-white transition-colors duration-200 touch-manipulation" aria-label="Search">
+                                <SearchIcon />
+                            </button>
+                        </Tooltip>
+                        <Tooltip content="Chat" position="bottom" delay={400}>
+                            <button className="text-gray-300 hover:text-white transition-colors duration-200 touch-manipulation" aria-label="Chat">
+                                <ChatIcon />
+                            </button>
+                        </Tooltip>
+                        <Tooltip content="Help" position="bottom" delay={400}>
+                            <button className="text-gray-300 hover:text-white transition-colors duration-200 touch-manipulation" aria-label="Help">
+                                <HelpIcon />
+                            </button>
+                        </Tooltip>
+                        <Tooltip content="Notifications" position="left" delay={400}>
+                            <button className="text-gray-300 hover:text-white transition-colors duration-200 touch-manipulation" aria-label="Notifications">
+                                <BellIcon />
+                            </button>
+                        </Tooltip>
+                        <Tooltip content="User Profile" position="left" delay={400}>
+                            <div className="w-9 h-9 rounded-full bg-black border border-gray-600 flex items-center justify-center cursor-pointer hover:border-gray-500 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-white">
                                     <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line>
                                 </svg>
                             </div>
-                        </div>
-                        
-                        {/* Mobile/Tablet: Hamburger menu */}
-                        <div className="lg:hidden">
-                            <button
-                                onClick={() => setIsActionsMenuOpen(!isActionsMenuOpen)}
-                                className="text-gray-300 hover:text-white transition-colors duration-200 p-2"
-                                aria-label="Menu"
-                                aria-expanded={isActionsMenuOpen}
-                            >
-                                <MenuIcon />
-                            </button>
-                            <AnimatePresence>
-                                {isActionsMenuOpen && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: -10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -10 }}
-                                        transition={{ duration: 0.2 }}
-                                        className="absolute right-0 top-full mt-2 bg-[#2a2a2a] border border-gray-600 rounded-lg shadow-xl py-2 min-w-[200px] z-50"
-                                    >
-                                        <button className="w-full px-4 py-3 text-left text-gray-300 hover:text-white hover:bg-gray-700/50 transition-colors duration-200 flex items-center gap-3" aria-label="Search">
-                                            <SearchIcon />
-                                            <span className="text-sm">Search</span>
-                                        </button>
-                                        <button className="w-full px-4 py-3 text-left text-gray-300 hover:text-white hover:bg-gray-700/50 transition-colors duration-200 flex items-center gap-3" aria-label="Chat">
-                                            <ChatIcon />
-                                            <span className="text-sm">Chat</span>
-                                        </button>
-                                        <button className="w-full px-4 py-3 text-left text-gray-300 hover:text-white hover:bg-gray-700/50 transition-colors duration-200 flex items-center gap-3" aria-label="Help">
-                                            <HelpIcon />
-                                            <span className="text-sm">Help</span>
-                                        </button>
-                                        <button className="w-full px-4 py-3 text-left text-gray-300 hover:text-white hover:bg-gray-700/50 transition-colors duration-200 flex items-center gap-3" aria-label="Notifications">
-                                            <BellIcon />
-                                            <span className="text-sm">Notifications</span>
-                                        </button>
-                                        <div className="w-full px-4 py-3 flex items-center gap-3 border-t border-gray-600 mt-2">
-                                            <div className="w-8 h-8 rounded-full bg-black border border-gray-600 flex items-center justify-center shrink-0">
-                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-white">
-                                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line>
-                                                </svg>
-                                            </div>
-                                            <span className="text-sm text-gray-300">Profile</span>
-                                        </div>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Bottom Row for Project Details */}
-                <div className="text-[12.25px] text-gray-400 flex items-center h-5 overflow-hidden">
-                    <div className="w-[70px] shrink-0 text-center m-0">
-                        <span className="font-semibold text-white">
-                            {categoryAbbreviations[activeCategoryKey]}
-                        </span>
-                    </div>
-                    
-                    <ProjectSelector
-                        projects={projects}
-                        selectedProject={selectedProject}
-                        onSelectProject={handleProjectSelect}
-                    />
-
-                    <div className="flex items-center min-w-0 flex-1 overflow-hidden">
-                        {selectedProject.details.map((detail, index) => (
-                            <React.Fragment key={index}>
-                                <span className="text-gray-500 px-2 shrink-0">|</span>
-                                <span className="truncate whitespace-nowrap">{detail}</span>
-                            </React.Fragment>
-                        ))}
+                        </Tooltip>
                     </div>
                 </div>
             </div>
+
+            {/* Mobile Menu Slide-Out Panel */}
+            <AnimatePresence>
+                {isMobileMenuOpen && (
+                    <>
+                        {/* Backdrop/Overlay */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="fixed inset-0 bg-black/50 z-40 md:hidden"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                        />
+                        
+                        {/* Slide-Out Panel */}
+                        <motion.div
+                            ref={mobileMenuRef}
+                            initial={{ x: '100%' }}
+                            animate={{ x: 0 }}
+                            exit={{ x: '100%' }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                            className="fixed top-0 right-0 h-full w-[280px] max-w-[85vw] bg-[#1e1e1e] shadow-2xl z-50 md:hidden flex flex-col"
+                        >
+                            {/* Header with Close Button */}
+                            <div className="flex items-center justify-between p-4 border-b border-gray-700">
+                                <h2 className="text-lg font-semibold text-white">Menu</h2>
+                                <button
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="text-gray-300 hover:text-white transition-colors duration-200 touch-manipulation p-2"
+                                    aria-label="Close menu"
+                                >
+                                    <XIcon />
+                                </button>
+                            </div>
+
+                            {/* Menu Items */}
+                            <div className="flex-1 overflow-y-auto py-4">
+                                <div className="space-y-1 px-2">
+                                    {/* Project Selector Section */}
+                                    <div className="mb-4 pb-4 border-b border-gray-700">
+                                        <div className="px-4 mb-2">
+                                            <div className="text-xs font-medium text-gray-400 uppercase tracking-wide">Project</div>
+                                        </div>
+                                        <div className="px-2">
+                                            <ProjectSelector
+                                                projects={projects}
+                                                selectedProject={selectedProject}
+                                                onSelectProject={(project) => {
+                                                    handleProjectSelect(project);
+                                                }}
+                                            />
+                                        </div>
+                                        <div className="px-2 mt-2">
+                                            <ProjectDetailsCard project={selectedProject} />
+                                        </div>
+                                    </div>
+                                    
+                                    <button
+                                        onClick={() => {
+                                            setIsMobileMenuOpen(false);
+                                            // Add search functionality here
+                                        }}
+                                        className="w-full flex items-center gap-3 px-4 py-3 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors duration-200 touch-manipulation text-left"
+                                        aria-label="Search"
+                                    >
+                                        <SearchIcon />
+                                        <span className="text-sm font-medium">Search</span>
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setIsMobileMenuOpen(false);
+                                            // Add chat functionality here
+                                        }}
+                                        className="w-full flex items-center gap-3 px-4 py-3 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors duration-200 touch-manipulation text-left"
+                                        aria-label="Chat"
+                                    >
+                                        <ChatIcon />
+                                        <span className="text-sm font-medium">Chat</span>
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setIsMobileMenuOpen(false);
+                                            // Add help functionality here
+                                        }}
+                                        className="w-full flex items-center gap-3 px-4 py-3 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors duration-200 touch-manipulation text-left"
+                                        aria-label="Help"
+                                    >
+                                        <HelpIcon />
+                                        <span className="text-sm font-medium">Help</span>
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setIsMobileMenuOpen(false);
+                                            // Add notifications functionality here
+                                        }}
+                                        className="w-full flex items-center gap-3 px-4 py-3 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors duration-200 touch-manipulation text-left"
+                                        aria-label="Notifications"
+                                    >
+                                        <BellIcon />
+                                        <span className="text-sm font-medium">Notifications</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* User Profile Section */}
+                            <div className="border-t border-gray-700 p-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-black border border-gray-600 flex items-center justify-center shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-white">
+                                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line>
+                                        </svg>
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="text-sm font-medium text-white truncate">User Profile</div>
+                                        <div className="text-xs text-gray-400 truncate">user@example.com</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
         </header>
     );
 };

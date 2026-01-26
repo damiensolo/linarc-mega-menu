@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import HoverMenu from './HoverMenu';
 import ProjectDetailsCard from './ProjectDetailsCard';
@@ -364,6 +364,19 @@ const categoryAbbreviations: { [key in CategoryKeyWithBookmarks]: string } = {
 
 interface HeaderProps {
     onSelectionChange: (title: string) => void;
+    version?: 'v1' | 'v2';
+    onBookmarksDataChange?: (data: {
+        bookmarks: Array<{
+            categoryKey: string;
+            itemKey: string;
+            label: string;
+            description: string;
+            icon: React.ReactNode;
+            navIcon: React.ReactNode;
+        }>;
+        toggleBookmark: (categoryKey: string, itemKey: string) => void;
+        handleSelect: (categoryKey: string, subcategoryKey: string) => void;
+    }) => void;
 }
 
 // Bookmarks management with localStorage
@@ -436,7 +449,7 @@ const useBookmarks = () => {
     return { bookmarks, toggleBookmark, getBookmarkItems };
 };
 
-const Header: React.FC<HeaderProps> = ({ onSelectionChange }) => {
+const Header: React.FC<HeaderProps> = ({ onSelectionChange, version = 'v1', onBookmarksDataChange }) => {
     const [isMenuVisible, setMenuVisible] = useState(false);
     const [isBookmarksMenuVisible, setBookmarksMenuVisible] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -475,7 +488,7 @@ const Header: React.FC<HeaderProps> = ({ onSelectionChange }) => {
 
     // FIX: Add type guard to safely access properties on `category`.
     // This ensures `category` is a `StandardCategoryData` before we try to find an item in its `items` array.
-    const handleSelect = (categoryKey: string, subcategoryKey: string) => {
+    const handleSelect = useCallback((categoryKey: string, subcategoryKey: string) => {
         if (categoryKey !== 'more') {
             const category = navigationData[categoryKey];
             if ('mainIcon' in category) { // Type guard
@@ -490,7 +503,18 @@ const Header: React.FC<HeaderProps> = ({ onSelectionChange }) => {
         }
         setMenuVisible(false);
         setBookmarksMenuVisible(false);
-    };
+    }, [navigationData, onSelectionChange]);
+
+    // Expose bookmarks data to parent for v2 sidebar integration
+    useEffect(() => {
+        if (version === 'v2' && onBookmarksDataChange) {
+            onBookmarksDataChange({
+                bookmarks: bookmarkItems,
+                toggleBookmark,
+                handleSelect
+            });
+        }
+    }, [version, bookmarkItems, toggleBookmark, onBookmarksDataChange, handleSelect]);
 
     const handleProjectSelect = (project: Project) => {
         setSelectedProject(project);
@@ -559,15 +583,36 @@ const Header: React.FC<HeaderProps> = ({ onSelectionChange }) => {
     const navItems = activeCategory.items;
     const activeColor = categoryColors[activeCategoryKey] || 'text-white';
 
+    // Version-specific styling
+    const headerClasses = version === 'v1' 
+        ? "bg-[#1e1e1e] text-white font-['Lato'] shadow-lg min-h-[80px] md:h-[80px] border-b-[3px] border-gray-800"
+        : "bg-[#1a1a1a] text-white font-['Lato'] shadow-xl min-h-[80px] md:h-[80px] border-b-2 border-cyan-500/50";
+    
+    const hoverMenuClasses = version === 'v1'
+        ? "hover:bg-gray-800/50"
+        : "hover:bg-cyan-900/30";
+    
+    const bookmarksMenuClasses = version === 'v1'
+        ? "hover:bg-gray-700/50"
+        : "hover:bg-cyan-900/30";
+    
+    const projectPanelClasses = version === 'v1'
+        ? "bg-[#252525]/50 rounded-lg border border-gray-700/50"
+        : "bg-[#252525]/70 rounded-lg border border-cyan-600/30";
+    
+    const chevronBgClasses = version === 'v1'
+        ? "bg-[#1e1e1e]"
+        : "bg-[#1a1a1a]";
+
     return (
-        <header className="bg-[#1e1e1e] text-white font-['Lato'] shadow-lg min-h-[80px] md:h-[80px] border-b-[3px] border-gray-800">
+        <header className={headerClasses}>
             <div className="pl-2 pr-2 md:pr-0 pt-2 pb-2 flex items-center h-full">
                 {/* Left & Center Nav Items */}
                 <div className="flex items-center gap-x-4 md:gap-x-6 flex-1 min-w-0">
                     {/* Main Category Menu */}
                     <div 
                         ref={hoverMenuRef}
-                        className="relative flex flex-col items-center gap-1 px-2 py-1 rounded-md hover:bg-gray-800/50 transition-colors cursor-pointer group shrink-0"
+                        className={`relative flex flex-col items-center gap-1 px-2 py-1 rounded-md ${hoverMenuClasses} transition-colors cursor-pointer group shrink-0`}
                         style={{ width: '74px' }}
                         onMouseEnter={() => {
                             if (!isMobile) {
@@ -592,7 +637,7 @@ const Header: React.FC<HeaderProps> = ({ onSelectionChange }) => {
                             <motion.div
                                 animate={{ rotate: isMenuVisible ? 180 : 0 }}
                                 transition={{ duration: 0.2 }}
-                                className="absolute -bottom-1 bg-[#1e1e1e] rounded-full p-0.5"
+                                className={`absolute -bottom-1 ${chevronBgClasses} rounded-full p-0.5`}
                                 style={{ right: '-14px' }}
                             >
                                 <ChevronDownIcon className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" style={{ marginLeft: '0px', marginRight: '0px' }} />
@@ -612,10 +657,11 @@ const Header: React.FC<HeaderProps> = ({ onSelectionChange }) => {
                             }
                         </AnimatePresence>
                     </div>
-                    {/* Bookmarks Button */}
+                    {/* Bookmarks Button - Only for v1 */}
+                    {version === 'v1' && (
                     <div 
                         ref={bookmarksMenuRef}
-                        className="relative flex flex-col items-center gap-1 px-2 py-1 rounded-md hover:bg-gray-700/50 transition-colors cursor-pointer group shrink-0"
+                        className={`relative flex flex-col items-center gap-1 px-2 py-1 rounded-md ${bookmarksMenuClasses} transition-colors cursor-pointer group shrink-0`}
                         onMouseEnter={() => {
                             if (!isMobile) {
                                 setBookmarksMenuVisible(true);
@@ -639,7 +685,7 @@ const Header: React.FC<HeaderProps> = ({ onSelectionChange }) => {
                             <motion.div
                                 animate={{ rotate: isBookmarksMenuVisible ? 180 : 0 }}
                                 transition={{ duration: 0.2 }}
-                                className="absolute -bottom-1 bg-[#1e1e1e] rounded-full p-0.5"
+                                className={`absolute -bottom-1 ${chevronBgClasses} rounded-full p-0.5`}
                                 style={{ right: '-12px' }}
                             >
                                 <ChevronDownIcon className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" style={{ marginLeft: '0px', marginRight: '0px' }} />
@@ -657,6 +703,7 @@ const Header: React.FC<HeaderProps> = ({ onSelectionChange }) => {
                             }
                         </AnimatePresence>
                     </div>
+                    )}
                     <nav className="hidden md:block flex-1 min-w-0">
                         <ul className="flex items-center gap-x-5 lg:gap-x-7 xl:gap-x-8">
                             {navItems.map((item) => (
@@ -847,7 +894,7 @@ const Header: React.FC<HeaderProps> = ({ onSelectionChange }) => {
                 {/* Right Section: Action Icons + Project Panel */}
                 <div className="hidden md:flex items-center h-full shrink-0">
                     {/* Project Panel */}
-                    <div className="flex items-center gap-2 pr-3 lg:pr-4 pl-2.5 bg-[#252525]/50 rounded-lg border border-gray-700/50 py-1.5">
+                    <div className={`flex items-center gap-2 pr-3 lg:pr-4 pl-2.5 ${projectPanelClasses} py-1.5`}>
                         <ProjectSelector
                             projects={projects}
                             selectedProject={selectedProject}

@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import BookmarksMenu from './FavoritesMenu';
 
 // --- Icon Definitions ---
 
@@ -60,20 +62,117 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ item, isActive, onClick }) =>
             e.preventDefault();
             onClick();
         }}
-        className={`relative flex flex-col items-center justify-center gap-1.5 h-[80] text-xs font-medium transition-colors duration-200 ${isActive ? 'text-gray-900' : 'text-gray-500 hover:text-gray-800'}`}
+        className={`relative flex flex-col items-center justify-center gap-1.5 h-[80px] w-full text-xs font-medium transition-colors duration-200 ${isActive ? 'text-gray-900' : 'text-gray-500 hover:text-gray-800'}`}
     >
         {item.icon}
         <span>{item.label}</span>
-        {isActive && <div className="absolute right-0 top-1/2 -translate-y-1/2 h-[16px] w-[4px] bg-orange-500 rounded-l-md"></div>}
+        {isActive && <div className="absolute right-[-2px] top-1/2 -translate-y-1/2 h-[16px] w-[4px] bg-orange-500 rounded-l-md"></div>}
     </a>
 );
 
-const Sidebar: React.FC = () => {
+interface BookmarkItem {
+    categoryKey: string;
+    itemKey: string;
+    label: string;
+    description: string;
+    icon: React.ReactNode;
+    navIcon: React.ReactNode;
+}
+
+interface SidebarProps {
+    version?: 'v1' | 'v2';
+    bookmarks?: BookmarkItem[];
+    onSelect?: (categoryKey: string, subcategoryKey: string) => void;
+    onToggleBookmark?: (categoryKey: string, itemKey: string) => void;
+}
+
+// Bookmarks Icon
+const BookmarksIcon = () => (
+    <IconWrapper>
+        <path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
+    </IconWrapper>
+);
+
+const Sidebar: React.FC<SidebarProps> = ({ version = 'v1', bookmarks = [], onSelect, onToggleBookmark }) => {
     const [activeItemKey, setActiveItemKey] = useState('dashboard');
+    const [isBookmarksMenuVisible, setBookmarksMenuVisible] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+    const bookmarksMenuRef = useRef<HTMLDivElement>(null);
+
+    // Detect mobile device
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    // Close bookmarks menu on outside click
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (bookmarksMenuRef.current && !bookmarksMenuRef.current.contains(event.target as Node)) {
+                setBookmarksMenuVisible(false);
+            }
+        };
+
+        if (isBookmarksMenuVisible) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isBookmarksMenuVisible]);
+
+    const handleSelect = (categoryKey: string, subcategoryKey: string) => {
+        if (onSelect) {
+            onSelect(categoryKey, subcategoryKey);
+        }
+        setBookmarksMenuVisible(false);
+    };
 
     return (
         <aside className="w-[82px] bg-gray-50 border-r border-gray-200 flex flex-col shrink-0">
-            <div className="flex-grow flex flex-col gap-6 pt-8">
+            <div className="flex-grow flex flex-col gap-6 pt-0">
+                {/* Bookmarks Button - Only for v2 */}
+                {version === 'v2' && (
+                    <div 
+                        ref={bookmarksMenuRef}
+                        className="relative w-full"
+                    >
+                        <button
+                            onClick={() => {
+                                setBookmarksMenuVisible(!isBookmarksMenuVisible);
+                            }}
+                            className={`relative flex flex-col items-center justify-center gap-1.5 h-[80px] w-full text-xs font-medium transition-colors duration-200 ${
+                                isBookmarksMenuVisible 
+                                    ? 'text-gray-900' 
+                                    : 'text-gray-500 hover:text-gray-800'
+                            }`}
+                            aria-label="Bookmarks menu"
+                            aria-expanded={isBookmarksMenuVisible}
+                        >
+                            <BookmarksIcon />
+                            <span>Bookmarks</span>
+                            {isBookmarksMenuVisible && (
+                                <div className="absolute right-[-2px] top-1/2 -translate-y-1/2 h-[16px] w-[4px] bg-orange-500 rounded-l-md"></div>
+                            )}
+                        </button>
+                        <AnimatePresence>
+                            {isBookmarksMenuVisible && bookmarks && onSelect && onToggleBookmark && (
+                                <BookmarksMenu 
+                                    bookmarks={bookmarks}
+                                    onSelect={handleSelect}
+                                    onToggleBookmark={onToggleBookmark}
+                                    position="right"
+                                />
+                            )}
+                        </AnimatePresence>
+                    </div>
+                )}
+                
                 {sidebarItems.map((item) => (
                     <SidebarItem
                         key={item.key}

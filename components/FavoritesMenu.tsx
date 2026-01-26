@@ -15,6 +15,7 @@ interface BookmarksMenuProps {
     bookmarks: BookmarkItem[];
     onSelect: (categoryKey: string, subcategoryKey: string) => void;
     onToggleBookmark: (categoryKey: string, itemKey: string) => void;
+    position?: 'bottom' | 'right';
 }
 
 // Bookmark Icon Component
@@ -35,16 +36,35 @@ const BookmarkIcon: React.FC<{ filled: boolean; className?: string }> = ({ fille
     </svg>
 );
 
-const BookmarksMenu: React.FC<BookmarksMenuProps> = ({ bookmarks, onSelect, onToggleBookmark }) => {
+const BookmarksMenu: React.FC<BookmarksMenuProps> = ({ bookmarks, onSelect, onToggleBookmark, position = 'bottom' }) => {
+    const isRightPosition = position === 'right';
+    
+    const emptyMenuClasses = isRightPosition
+        ? "absolute left-full top-0 ml-2 bg-white rounded-xl shadow-2xl p-6 md:p-8 z-50 origin-top-left w-[calc(100vw-2rem)] md:w-auto md:min-w-[400px]"
+        : "absolute top-full left-0 bg-white rounded-xl shadow-2xl p-6 md:p-8 z-50 origin-top-left w-[calc(100vw-2rem)] md:w-auto md:min-w-[400px]";
+    
+    const menuClasses = isRightPosition
+        ? "absolute left-full top-0 ml-2 bg-white rounded-xl shadow-2xl p-4 md:p-6 lg:p-8 z-50 origin-top-left w-[calc(100vw-2rem)] md:w-auto md:min-w-[500px]"
+        : "absolute top-full left-0 bg-white rounded-xl shadow-2xl p-4 md:p-6 lg:p-8 z-50 origin-top-left w-[calc(100vw-2rem)] md:w-auto md:min-w-[500px]";
+    
+    const animationProps = isRightPosition
+        ? {
+            initial: { opacity: 0, x: -10, scale: 0.95 },
+            animate: { opacity: 1, x: 0, scale: 1 },
+            exit: { opacity: 0, x: -10, scale: 0.95 }
+        }
+        : {
+            initial: { opacity: 0, y: 10, scale: 0.95 },
+            animate: { opacity: 1, y: 0, scale: 1 },
+            exit: { opacity: 0, y: 10, scale: 0.95 }
+        };
+
     if (bookmarks.length === 0) {
         return (
             <motion.div
-                initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                {...animationProps}
                 transition={{ duration: 0.2, ease: 'easeOut' }}
-                className="absolute top-full left-0 bg-white rounded-xl shadow-2xl p-6 md:p-8 z-50 origin-top-left w-[calc(100vw-2rem)] md:w-auto md:min-w-[400px]"
-                style={{ marginTop: '-2px' }}
+                className={emptyMenuClasses}
             >
                 <div className="text-center py-8">
                     <BookmarkIcon filled={false} className="w-12 h-12 text-gray-300 mx-auto mb-4" />
@@ -57,12 +77,9 @@ const BookmarksMenu: React.FC<BookmarksMenuProps> = ({ bookmarks, onSelect, onTo
 
     return (
         <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            {...animationProps}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="absolute top-full left-0 bg-white rounded-xl shadow-2xl p-4 md:p-6 lg:p-8 z-50 origin-top-left w-[calc(100vw-2rem)] md:w-auto md:min-w-[500px]"
-            style={{ marginTop: '-2px' }}
+            className={menuClasses}
         >
             <div className="mb-4 pb-4 border-b border-gray-100">
                 <h3 className="text-lg font-semibold text-gray-800">Bookmarks</h3>

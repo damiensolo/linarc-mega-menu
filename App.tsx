@@ -18,7 +18,7 @@ interface BookmarksData {
 
 const App: React.FC = () => {
   const [pageTitle, setPageTitle] = useState('Documentation / Document');
-  const [navVersion, setNavVersion] = useState<'v1' | 'v2'>('v1');
+  const [navVersion, setNavVersion] = useState<'v1' | 'v2'>('v2');
   const [bookmarksData, setBookmarksData] = useState<BookmarksData | null>(null);
 
   const toggleVersion = () => {

@@ -43,9 +43,8 @@ const App: React.FC = () => {
           onSelect={bookmarksData?.handleSelect}
           onToggleBookmark={bookmarksData?.toggleBookmark}
         />
-        <main className="flex-grow flex flex-col items-center justify-center px-8 py-3 text-gray-900 bg-white relative">
-          {/* Version Toggle Button */}
-          <div className="absolute top-4 right-4">
+        <main className="flex-grow flex flex-col items-center justify-center px-8 py-3 text-gray-900 bg-white">
+          <div className="flex flex-col items-center gap-4">
             <button
               onClick={toggleVersion}
               className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200 text-sm font-medium shadow-md"
@@ -53,13 +52,10 @@ const App: React.FC = () => {
             >
               {navVersion === 'v1' ? 'Switch to V2' : 'Switch to V1'}
             </button>
-          </div>
-          
-          <div className="flex flex-col items-center gap-4">
             <div className="text-sm text-gray-500 font-medium">
               Navigation Version: <span className="text-gray-800 font-semibold">{navVersion.toUpperCase()}</span>
             </div>
-            <h1 className="text-4xl font-bold text-gray-300">{pageTitle}</h1>
+            <h1 className="text-4xl font-bold text-gray-300 text-center">{pageTitle}</h1>
           </div>
         </main>
       </div>

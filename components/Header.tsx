@@ -586,11 +586,11 @@ const Header: React.FC<HeaderProps> = ({ onSelectionChange, version = 'v1', onBo
 
     // Version-specific styling
     const headerClasses = version === 'v1' 
-        ? "bg-[#1e1e1e] text-white font-['Lato'] shadow-lg min-h-[80px] md:h-[80px] border-b-[2px] border-gray-600"
+        ? "bg-[#1e1e1e] text-white font-['Lato'] shadow-lg h-[80px] border-b-[2px] border-gray-600"
         : "bg-[#1a1a1a] text-white font-['Lato'] shadow-xl min-h-[80px] md:h-[80px] border-b-2 border-cyan-500/50";
     
     const hoverMenuClasses = version === 'v1'
-        ? "bg-black -ml-2 h-[80px] justify-center rounded-none border-b border-gray-600"
+        ? "bg-black -ml-2 -mt-2 -mb-[8px] self-stretch flex flex-col justify-center items-center rounded-none border-b-2 border-gray-600"
         : "hover:bg-zinc-900/30 px-2 py-2 rounded-md";
     
     const bookmarksMenuClasses = version === 'v1'
@@ -605,9 +605,11 @@ const Header: React.FC<HeaderProps> = ({ onSelectionChange, version = 'v1', onBo
         ? "bg-[#1e1e1e]"
         : "bg-[#1a1a1a]";
 
+    const containerPaddingClasses = "pl-2 pr-2 md:pr-0 pt-2 pb-2";
+
     return (
         <header className={headerClasses}>
-            <div className="pl-2 pr-2 md:pr-0 pt-2 pb-2 flex items-center h-full">
+            <div className={`${containerPaddingClasses} flex items-center h-full`}>
                 {/* Left & Center Nav Items */}
                 <div className="flex items-center gap-x-4 md:gap-x-6 flex-1 min-w-0">
                     {/* Main Category Menu */}

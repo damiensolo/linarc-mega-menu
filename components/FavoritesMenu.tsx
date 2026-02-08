@@ -41,11 +41,11 @@ const BookmarksMenu: React.FC<BookmarksMenuProps> = ({ bookmarks, onSelect, onTo
     
     const emptyMenuClasses = isRightPosition
         ? "absolute left-full top-0 ml-2 bg-white rounded-xl shadow-2xl p-6 md:p-8 z-50 origin-top-left w-[calc(100vw-2rem)] md:w-auto md:min-w-[400px]"
-        : "absolute top-full left-0 bg-white rounded-xl shadow-2xl p-6 md:p-8 z-50 origin-top-left w-[calc(100vw-2rem)] md:w-auto md:min-w-[400px]";
+        : "fixed left-4 right-4 top-[90px] md:absolute md:top-full md:left-0 md:right-auto md:-left-[100px] bg-white rounded-xl shadow-2xl p-6 md:p-8 z-50 origin-top-left w-auto md:w-auto md:min-w-[400px]";
     
     const menuClasses = isRightPosition
-        ? "absolute left-full top-0 ml-2 bg-white rounded-xl shadow-2xl p-4 md:p-6 lg:p-8 z-50 origin-top-left w-[calc(100vw-2rem)] md:w-auto md:min-w-[500px]"
-        : "absolute top-full left-0 bg-white rounded-xl shadow-2xl p-4 md:p-6 lg:p-8 z-50 origin-top-left w-[calc(100vw-2rem)] md:w-auto md:min-w-[500px]";
+        ? "absolute left-full top-0 ml-2 bg-white rounded-xl shadow-2xl p-4 md:p-6 lg:p-8 z-50 origin-top-left w-[calc(100vw-2rem)] md:w-auto md:min-w-[600px] lg:min-w-[850px] max-w-[calc(100vw-2rem)]"
+        : "fixed left-4 right-4 top-[90px] md:absolute md:top-full md:left-0 md:right-auto md:-left-[100px] bg-white rounded-xl shadow-2xl p-4 md:p-6 lg:p-8 z-50 origin-top-left w-auto md:w-auto md:min-w-[600px] lg:min-w-[850px] max-w-[calc(100vw-2rem)]";
     
     const animationProps = isRightPosition
         ? {
@@ -80,12 +80,13 @@ const BookmarksMenu: React.FC<BookmarksMenuProps> = ({ bookmarks, onSelect, onTo
             {...animationProps}
             transition={{ duration: 0.2, ease: 'easeOut' }}
             className={menuClasses}
+            style={{ marginTop: '-2px' }}
         >
             <div className="mb-4 pb-4 border-b border-gray-100">
                 <h3 className="text-lg font-semibold text-gray-800">Bookmarks</h3>
                 <p className="text-xs text-gray-500 mt-1">Your frequently used tools</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-black">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 md:gap-x-6 lg:gap-x-8 gap-y-4 text-black">
                 {bookmarks.map((item) => (
                     <a
                         key={`${item.categoryKey}:${item.itemKey}`}

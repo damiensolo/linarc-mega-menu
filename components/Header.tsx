@@ -88,6 +88,7 @@ const SpecbookIcon = () => <NavIconWrapper><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 
 
 // General Icons
 const ReportsIcon = () => <NavIconWrapper><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></NavIconWrapper>;
+const BookmarkNavIcon = () => <NavIconWrapper><path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></NavIconWrapper>;
 const SearchIcon = () => <NavIconWrapper><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></NavIconWrapper>;
 const ChatIcon = () => <NavIconWrapper><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><line x1="15" y1="10" x2="15.01" y2="10"></line><line x1="11" y1="10" x2="11.01" y2="10"></line><line x1="7" y1="10" x2="7.01" y2="10"></line></NavIconWrapper>;
 const HelpIcon = () => <NavIconWrapper><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></NavIconWrapper>;
@@ -251,7 +252,7 @@ interface NavItemProps {
 const NavItem: React.FC<NavItemProps> = ({ icon, label, isActive = false, activeColor = 'text-white', onClick }) => (
     <a href="#" onClick={onClick} className={`flex flex-col items-center gap-2 transition-colors duration-200 ${isActive ? activeColor : 'text-gray-300 hover:text-white'}`}>
         {icon}
-        <span className={`text-[12.3px] ${isActive ? 'font-semibold' : 'font-medium'}`}>{label}</span>
+        <span className={`text-[12px] ${isActive ? 'font-semibold' : 'font-medium'}`}>{label}</span>
     </a>
 );
 
@@ -585,16 +586,16 @@ const Header: React.FC<HeaderProps> = ({ onSelectionChange, version = 'v1', onBo
 
     // Version-specific styling
     const headerClasses = version === 'v1' 
-        ? "bg-[#1e1e1e] text-white font-['Lato'] shadow-lg min-h-[80px] md:h-[80px] border-b-[3px] border-gray-800"
+        ? "bg-[#1e1e1e] text-white font-['Lato'] shadow-lg min-h-[80px] md:h-[80px] border-b-[2px] border-gray-600"
         : "bg-[#1a1a1a] text-white font-['Lato'] shadow-xl min-h-[80px] md:h-[80px] border-b-2 border-cyan-500/50";
     
     const hoverMenuClasses = version === 'v1'
-        ? "hover:bg-gray-800/50"
-        : "hover:bg-cyan-900/30";
+        ? "bg-black -ml-2 h-[80px] justify-center rounded-none border-b border-gray-600"
+        : "hover:bg-zinc-900/30 px-2 py-2 rounded-md";
     
     const bookmarksMenuClasses = version === 'v1'
-        ? "hover:bg-gray-700/50"
-        : "hover:bg-cyan-900/30";
+        ? ""
+        : "hover:bg-zinc-900/30";
     
     const projectPanelClasses = version === 'v1'
         ? "bg-[#252525]/50 rounded-lg border border-gray-700/50"
@@ -612,8 +613,8 @@ const Header: React.FC<HeaderProps> = ({ onSelectionChange, version = 'v1', onBo
                     {/* Main Category Menu */}
                     <div 
                         ref={hoverMenuRef}
-                        className={`relative flex flex-col items-center gap-1 px-2 py-1 rounded-md ${hoverMenuClasses} transition-colors cursor-pointer group shrink-0`}
-                        style={{ width: '74px' }}
+                        className={`relative flex flex-col items-center gap-1 ${hoverMenuClasses} transition-colors cursor-pointer group shrink-0`}
+                        style={{ width: '82px' }}
                         onMouseEnter={() => {
                             if (!isMobile) {
                                 setMenuVisible(true);
@@ -643,7 +644,7 @@ const Header: React.FC<HeaderProps> = ({ onSelectionChange, version = 'v1', onBo
                                 <ChevronDownIcon className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" style={{ marginLeft: '0px', marginRight: '0px' }} />
                             </motion.div>
                         </div>
-                        <span className="text-[11px] font-medium text-white whitespace-nowrap">{categoryAbbreviations[activeCategoryKey]}</span>
+                        <span className="text-[12px] font-bold text-white whitespace-nowrap">{categoryAbbreviations[activeCategoryKey]}</span>
                         <div className="absolute top-full h-4 w-full" />
                         <AnimatePresence>
                             {isMenuVisible && 
@@ -661,17 +662,10 @@ const Header: React.FC<HeaderProps> = ({ onSelectionChange, version = 'v1', onBo
                     {version === 'v1' && (
                     <div 
                         ref={bookmarksMenuRef}
-                        className={`relative flex flex-col items-center gap-1 px-2 py-1 rounded-md ${bookmarksMenuClasses} transition-colors cursor-pointer group shrink-0`}
-                        onMouseEnter={() => {
-                            if (!isMobile) {
-                                setBookmarksMenuVisible(true);
-                                setMenuVisible(false);
-                            }
-                        }}
-                        onMouseLeave={() => !isMobile && setBookmarksMenuVisible(false)}
+                        className={`relative flex flex-col items-center gap-2 px-2 py-2 rounded-md ${bookmarksMenuClasses} transition-colors cursor-pointer group shrink-0`}
                         onClick={() => {
-                            if (isMobile) {
-                                setBookmarksMenuVisible(!isBookmarksMenuVisible);
+                            setBookmarksMenuVisible(!isBookmarksMenuVisible);
+                            if (!isBookmarksMenuVisible) {
                                 setMenuVisible(false);
                             }
                         }}
@@ -681,17 +675,16 @@ const Header: React.FC<HeaderProps> = ({ onSelectionChange, version = 'v1', onBo
                         aria-label="Bookmarks menu"
                     >
                         <div className="relative flex items-center justify-center">
-                            <BookmarksMainIcon />
+                            <BookmarkNavIcon />
                             <motion.div
                                 animate={{ rotate: isBookmarksMenuVisible ? 180 : 0 }}
                                 transition={{ duration: 0.2 }}
-                                className={`absolute -bottom-1 ${chevronBgClasses} rounded-full p-0.5`}
-                                style={{ right: '-12px' }}
+                                className={`absolute -bottom-1 -right-2 rounded-full p-0.5`}
                             >
-                                <ChevronDownIcon className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" style={{ marginLeft: '0px', marginRight: '0px' }} />
+                                <ChevronDownIcon className="w-[14px] h-[14px] text-gray-400 group-hover:text-white transition-colors flex flex-col gap-0 justify-center items-center p-0 -mx-[5px] -my-[9px]" />
                             </motion.div>
                         </div>
-                        <span className="text-[11px] font-medium text-white whitespace-nowrap">{categoryAbbreviations.bookmarks}</span>
+                        <span className="text-[12px] font-medium text-gray-300 group-hover:text-white whitespace-nowrap transition-colors">{categoryAbbreviations.bookmarks}</span>
                         <div className="absolute top-full h-4 w-full" />
                         <AnimatePresence>
                             {isBookmarksMenuVisible && 

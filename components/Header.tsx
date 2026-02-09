@@ -586,11 +586,11 @@ const Header: React.FC<HeaderProps> = ({ onSelectionChange, version = 'v1', onBo
 
     // Version-specific styling
     const headerClasses = version === 'v1' 
-        ? "bg-[#1e1e1e] text-white font-['Lato'] shadow-lg h-[80px] border-b-[2px] border-gray-600"
-        : "bg-[#1a1a1a] text-white font-['Lato'] shadow-xl min-h-[80px] md:h-[80px] border-b-2 border-cyan-500/50";
+        ? "bg-[#1e1e1e] text-white font-['Lato'] shadow-lg h-[72px] border-b-[2px] border-gray-600"
+        : "bg-[#1a1a1a] text-white font-['Lato'] shadow-xl min-h-[72px] md:h-[72px] border-b-2 border-cyan-500/50";
     
     const hoverMenuClasses = version === 'v1'
-        ? "bg-black -ml-2 -mt-2 -mb-[8px] self-stretch flex flex-col justify-center items-center rounded-none border-b-2 border-gray-600"
+        ? "bg-black -ml-2 -mt-2 -mb-[10px] self-stretch flex flex-col justify-center items-center rounded-none border-b-2 border-gray-600"
         : "hover:bg-zinc-900/30 px-2 py-2 rounded-md";
     
     const bookmarksMenuClasses = version === 'v1'
@@ -605,13 +605,13 @@ const Header: React.FC<HeaderProps> = ({ onSelectionChange, version = 'v1', onBo
         ? "bg-[#1e1e1e]"
         : "bg-[#1a1a1a]";
 
-    const containerPaddingClasses = "pl-2 pr-2 md:pr-0 pt-2 pb-2";
+    const containerPaddingClasses = "pl-2 pr-2 md:pr-0 pt-3 pb-2";
 
     return (
         <header className={headerClasses}>
             <div className={`${containerPaddingClasses} flex items-center h-full`}>
                 {/* Left & Center Nav Items */}
-                <div className="flex items-center gap-x-4 md:gap-x-6 flex-1 min-w-0">
+                <div className="flex items-center gap-x-4 md:gap-x-6 flex-1 min-w-0 h-full">
                     {/* Main Category Menu */}
                     <div 
                         ref={hoverMenuRef}
@@ -700,7 +700,7 @@ const Header: React.FC<HeaderProps> = ({ onSelectionChange, version = 'v1', onBo
                     </div>
                     )}
                     <nav className="hidden md:block flex-1 min-w-0">
-                        <ul className="flex items-center gap-x-5 lg:gap-x-7 xl:gap-x-8">
+                        <ul className="flex items-center gap-x-5 lg:gap-x-7 xl:gap-x-9">
                             {navItems.map((item) => (
                                 <li key={item.key}>
                                     <NavItem 
@@ -756,7 +756,7 @@ const Header: React.FC<HeaderProps> = ({ onSelectionChange, version = 'v1', onBo
                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                     exit={{ opacity: 0, y: -10, scale: 0.95 }}
                                     transition={{ duration: 0.2, ease: "easeOut" }}
-                                    className="fixed right-2 top-[90px] w-[calc(100vw-1rem)] max-w-[320px] bg-[#2a2a2a] border border-gray-600 rounded-lg shadow-xl z-50 md:hidden max-h-[calc(100vh-110px)] overflow-y-auto"
+                                    className="fixed right-2 top-[82px] w-[calc(100vw-1rem)] max-w-[320px] bg-[#2a2a2a] border border-gray-600 rounded-lg shadow-xl z-50 md:hidden max-h-[calc(100vh-102px)] overflow-y-auto"
                                 >
                                     {/* Project Selection */}
                                     <div className="p-3 border-b border-gray-700">

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BookmarksMenu from './FavoritesMenu';
+import { QuickCreateMenu } from './QuickCreateMenu';
 
 // --- Icon Definitions ---
 
@@ -136,6 +137,8 @@ const Sidebar: React.FC<SidebarProps> = ({ version = 'v1', bookmarks = [], onSel
     return (
         <aside className="w-[82px] bg-gray-50 border-r border-gray-200 flex flex-col shrink-0">
             <div className="flex-grow flex flex-col gap-2 pt-0">
+                <QuickCreateMenu />
+                
                 {/* Bookmarks Button - Only for v2 */}
                 {version === 'v2' && (
                     <div 

@@ -1,5 +1,43 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+    Briefcase,
+    FolderKanban,
+    CalendarRange,
+    Calendar,
+    MessageSquare,
+    BookUser,
+    Users,
+    ClipboardList,
+    CheckSquare,
+    DollarSign,
+    CircleDollarSign,
+    ScrollText,
+    FileDiff,
+    HardHat,
+    Tablet,
+    Truck,
+    ShieldCheck,
+    BarChart3,
+    Activity,
+    File,
+    Map,
+    FileQuestion,
+    FileCheck,
+    BookOpen,
+    FileBarChart,
+    Bookmark,
+    Search,
+    MessageCircle,
+    HelpCircle,
+    Bell,
+    Menu,
+    X,
+    ChevronDown,
+    Check,
+    ClipboardCheck,
+    FileText
+} from 'lucide-react';
 import HoverMenu from './HoverMenu';
 import ProjectDetailsCard from './ProjectDetailsCard';
 import BookmarksMenu from './FavoritesMenu';
@@ -9,28 +47,15 @@ import Tooltip from './Tooltip';
 
 // Base wrapper for small nav icons
 const NavIconWrapper: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
-    <svg 
-        xmlns="http://www.w3.org/2000/svg" 
-        width="24" 
-        height="24" 
-        viewBox="0 0 24 24" 
-        fill="none" 
-        stroke="currentColor" 
-        strokeWidth="1.5" 
-        strokeLinecap="round" 
-        strokeLinejoin="round" 
-        className={`w-6 h-6 ${className}`}
-    >
+    <div className={`flex items-center justify-center w-6 h-6 ${className}`}>
         {children}
-    </svg>
+    </div>
 );
 
 // Base wrapper for menu item icons (in hover menu)
 const MenuIconWrapper: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
     <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${className}`}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            {children}
-        </svg>
+        {children}
     </div>
 );
 
@@ -40,9 +65,9 @@ const MainIconWrapper: React.FC<{ children: React.ReactNode; className?: string 
         <div className={`absolute w-[34px] h-[34px] rounded-md transform -rotate-6 shadow-lg ${className} opacity-80`}></div>
         <div className={`absolute w-[34px] h-[34px] rounded-md transform rotate-6 shadow-lg ${className} opacity-90`}></div>
         <div className={`absolute w-[30.6px] h-[30.6px] rounded-md flex items-center justify-center shadow-2xl ${className}`}>
-             <NavIconWrapper className="text-white">
+             <div className="text-white flex items-center justify-center w-6 h-6">
                 {children}
-            </NavIconWrapper>
+            </div>
         </div>
     </div>
 );
@@ -51,60 +76,60 @@ const MainIconWrapper: React.FC<{ children: React.ReactNode; className?: string 
 // --- All Icons ---
 
 // Project Management
-const ProjectIcon = () => <NavIconWrapper><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"></path></NavIconWrapper>;
-const PortfolioIcon = () => <NavIconWrapper><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></NavIconWrapper>;
-const PlannerIcon = () => <NavIconWrapper><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="m9 16 2 2 4-4" /></NavIconWrapper>;
-const ScheduleIcon = () => <NavIconWrapper><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></NavIconWrapper>;
+const ProjectIcon = () => <NavIconWrapper><Briefcase size={20} /></NavIconWrapper>;
+const PortfolioIcon = () => <NavIconWrapper><FolderKanban size={20} /></NavIconWrapper>;
+const PlannerIcon = () => <NavIconWrapper><CalendarRange size={20} /></NavIconWrapper>;
+const ScheduleIcon = () => <NavIconWrapper><Calendar size={20} /></NavIconWrapper>;
 
 // Collaboration
-const CommunicationIcon = () => <NavIconWrapper><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" /></NavIconWrapper>;
-const DirectoryIcon = () => <NavIconWrapper><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 7h10"/><path d="M7 12h10"/><path d="M7 17h10"/></NavIconWrapper>;
-const MyTeamIcon = () => <NavIconWrapper><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></NavIconWrapper>;
+const CommunicationIcon = () => <NavIconWrapper><MessageSquare size={20} /></NavIconWrapper>;
+const DirectoryIcon = () => <NavIconWrapper><BookUser size={20} /></NavIconWrapper>;
+const MyTeamIcon = () => <NavIconWrapper><Users size={20} /></NavIconWrapper>;
 
 // Quality
-const PunchlistIcon = () => <NavIconWrapper><line x1="10" y1="6" x2="21" y2="6"></line><line x1="10" y1="12" x2="21" y2="12"></line><line x1="10" y1="18" x2="21" y2="18"></line><polyline points="3 6 4 7 6 5"></polyline><polyline points="3 12 4 13 6 11"></polyline><polyline points="3 18 4 19 6 17"></polyline></NavIconWrapper>;
-const ChecklistIcon = () => <NavIconWrapper><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect><path d="m9 14 2 2 4-4"/></NavIconWrapper>;
+const PunchlistIcon = () => <NavIconWrapper><ClipboardList size={20} /></NavIconWrapper>;
+const ChecklistIcon = () => <NavIconWrapper><CheckSquare size={20} /></NavIconWrapper>;
 
 // Finance
-const FinanceIcon = () => <NavIconWrapper><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></NavIconWrapper>;
-const CostsIcon = () => <NavIconWrapper><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></NavIconWrapper>;
-const ContractIcon = () => <NavIconWrapper><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="m16 14-2-2-2 2"/><path d="m10 10 2 2 2-2"/><path d="M14 2v6h6"/></NavIconWrapper>;
-const ChangeOrderIcon = () => <NavIconWrapper><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M12 18a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 1.66 1.34 3 3 3Z"/><path d="M12 12v-1"/></NavIconWrapper>;
+const FinanceIcon = () => <NavIconWrapper><DollarSign size={20} /></NavIconWrapper>;
+const CostsIcon = () => <NavIconWrapper><CircleDollarSign size={20} /></NavIconWrapper>;
+const ContractIcon = () => <NavIconWrapper><ScrollText size={20} /></NavIconWrapper>;
+const ChangeOrderIcon = () => <NavIconWrapper><FileDiff size={20} /></NavIconWrapper>;
 
 // Field & Site
-const SiteIcon = () => <NavIconWrapper><path d="m12 13.4-4.5 4.5" /><path d="m18 17.1-4.5-4.5" /><path d="m12 3-4.5 4.5" /><path d="m18 7.5-4.5-4.5" /><path d="M21 11.5a8.38 8.38 0 0 1-3.6 7.4l-4.9-4.9" /><path d="M3 11.5a8.38 8.38 0 0 0 3.6 7.4l4.9-4.9" /><path d="M12 21a8.38 8.38 0 0 0 7.4-3.6" /><path d="M12 3a8.38 8.38 0 0 1 7.4 3.6" /></NavIconWrapper>;
-const FieldIcon = () => <NavIconWrapper><path d="M20.5 14.5A4.5 4.5 0 0 0 21 12V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6c0 1.2.4 2.4 1.2 3.2L7 18.5V21h10v-2.5l2.8-2.8H21z"/><path d="M7 15h10"/></NavIconWrapper>;
-const EquipmentIcon = () => <NavIconWrapper><path d="M5 18H3c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2h-2"/><path d="M17 18h-2v-4.3c0-.6.4-1.2 1-1.4l1-.4c.6-.2 1.2.2 1.4 1l.6 1.7"/><path d="M17 18H9"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></NavIconWrapper>;
-const SafetyIcon = () => <NavIconWrapper><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></NavIconWrapper>;
-const AnalyticsIcon = () => <NavIconWrapper><path d="M3 3v18h18" /><path d="m19 9-5 5-4-4-3 3" /></NavIconWrapper>;
-const FeedsIcon = () => <NavIconWrapper><path d="M4 11a9 9 0 0 1 9 9" /><path d="M4 4a16 16 0 0 1 16 16" /><circle cx="5" cy="19" r="1" /></NavIconWrapper>;
+const SiteIcon = () => <NavIconWrapper><HardHat size={20} /></NavIconWrapper>;
+const FieldIcon = () => <NavIconWrapper><Tablet size={20} /></NavIconWrapper>;
+const EquipmentIcon = () => <NavIconWrapper><Truck size={20} /></NavIconWrapper>;
+const SafetyIcon = () => <NavIconWrapper><ShieldCheck size={20} /></NavIconWrapper>;
+const AnalyticsIcon = () => <NavIconWrapper><BarChart3 size={20} /></NavIconWrapper>;
+const FeedsIcon = () => <NavIconWrapper><Activity size={20} /></NavIconWrapper>;
 
 // Documentation
-const DocumentIcon = () => <NavIconWrapper><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></NavIconWrapper>;
-const PlansIcon = () => <NavIconWrapper><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7"/><path d="M18 3v5h5"/><path d="M8 18h8"/><path d="M8 14h8"/><path d="M8 10h3"/></NavIconWrapper>;
-const RFIIcon = () => <NavIconWrapper><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><circle cx="12" cy="14" r="1"/><path d="M12 10a2 2 0 0 1-2-2c0-1.5.5-3 3-3s3 1.5 3 3"/></NavIconWrapper>;
-const SubmittalsIcon = () => <NavIconWrapper><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></NavIconWrapper>;
-const SpecbookIcon = () => <NavIconWrapper><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></NavIconWrapper>;
+const DocumentIcon = () => <NavIconWrapper><File size={20} /></NavIconWrapper>;
+const PlansIcon = () => <NavIconWrapper><Map size={20} /></NavIconWrapper>;
+const RFIIcon = () => <NavIconWrapper><FileQuestion size={20} /></NavIconWrapper>;
+const SubmittalsIcon = () => <NavIconWrapper><FileCheck size={20} /></NavIconWrapper>;
+const SpecbookIcon = () => <NavIconWrapper><BookOpen size={20} /></NavIconWrapper>;
 
 // General Icons
-const ReportsIcon = () => <NavIconWrapper><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></NavIconWrapper>;
-const BookmarkNavIcon = () => <NavIconWrapper><path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></NavIconWrapper>;
-const SearchIcon = () => <NavIconWrapper><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></NavIconWrapper>;
-const ChatIcon = () => <NavIconWrapper><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><line x1="15" y1="10" x2="15.01" y2="10"></line><line x1="11" y1="10" x2="11.01" y2="10"></line><line x1="7" y1="10" x2="7.01" y2="10"></line></NavIconWrapper>;
-const HelpIcon = () => <NavIconWrapper><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></NavIconWrapper>;
-const BellIcon = () => <NavIconWrapper><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></NavIconWrapper>;
-const MenuIcon = () => <NavIconWrapper><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="18" x2="20" y2="18"></line></NavIconWrapper>;
-const XIcon = () => <NavIconWrapper><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></NavIconWrapper>;
+const ReportsIcon = () => <NavIconWrapper><FileBarChart size={20} /></NavIconWrapper>;
+const BookmarkNavIcon = () => <NavIconWrapper><Bookmark size={20} /></NavIconWrapper>;
+const SearchIcon = () => <NavIconWrapper><Search size={20} /></NavIconWrapper>;
+const ChatIcon = () => <NavIconWrapper><MessageCircle size={20} /></NavIconWrapper>;
+const HelpIcon = () => <NavIconWrapper><HelpCircle size={20} /></NavIconWrapper>;
+const BellIcon = () => <NavIconWrapper><Bell size={20} /></NavIconWrapper>;
+const MenuIcon = () => <NavIconWrapper><Menu size={20} /></NavIconWrapper>;
+const XIcon = () => <NavIconWrapper><X size={20} /></NavIconWrapper>;
 
 
 // --- Main Category Icons ---
-const ProjectManagementMainIcon = () => <MainIconWrapper className="bg-orange-500"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"></path></MainIconWrapper>;
-const CollaborationMainIcon = () => <MainIconWrapper className="bg-sky-500"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></MainIconWrapper>;
-const QualityMainIcon = () => <MainIconWrapper className="bg-rose-500"><polyline points="3 6 4 7 6 5"></polyline><polyline points="3 12 4 13 6 11"></polyline><polyline points="3 18 4 19 6 17"></polyline><line x1="10" y1="6" x2="21" y2="6"></line><line x1="10" y1="12" x2="21" y2="12"></line><line x1="10" y1="18" x2="21" y2="18"></line></MainIconWrapper>;
-const FinanceMainIcon = () => <MainIconWrapper className="bg-green-500"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></MainIconWrapper>;
-const FieldOpsMainIcon = () => <MainIconWrapper className="bg-amber-500"><path d="M20.5 14.5A4.5 4.5 0 0 0 21 12V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6c0 1.2.4 2.4 1.2 3.2L7 18.5V21h10v-2.5l2.8-2.8H21z"/><path d="M7 15h10"/></MainIconWrapper>;
-const DocumentationMainIcon = () => <MainIconWrapper className="bg-cyan-500"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></MainIconWrapper>;
-const BookmarksMainIcon = () => <MainIconWrapper className="bg-yellow-500"><path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></MainIconWrapper>;
+const ProjectManagementMainIcon = () => <MainIconWrapper className="bg-orange-500"><Briefcase size={18} /></MainIconWrapper>;
+const CollaborationMainIcon = () => <MainIconWrapper className="bg-sky-500"><Users size={18} /></MainIconWrapper>;
+const QualityMainIcon = () => <MainIconWrapper className="bg-rose-500"><ClipboardCheck size={18} /></MainIconWrapper>;
+const FinanceMainIcon = () => <MainIconWrapper className="bg-green-500"><DollarSign size={18} /></MainIconWrapper>;
+const FieldOpsMainIcon = () => <MainIconWrapper className="bg-amber-500"><HardHat size={18} /></MainIconWrapper>;
+const DocumentationMainIcon = () => <MainIconWrapper className="bg-cyan-500"><FileText size={18} /></MainIconWrapper>;
+const BookmarksMainIcon = () => <MainIconWrapper className="bg-yellow-500"><Bookmark size={18} /></MainIconWrapper>;
 
 // --- Navigation Data Structure ---
 
@@ -138,55 +163,55 @@ const navigationData: { [key: string]: CategoryData } = {
     projectManagement: {
         key: 'projectManagement', title: 'Project Management', mainIcon: <ProjectManagementMainIcon/>,
         items: [
-            { key: 'project', label: 'Project', description: 'Core project management', icon: <MenuIconWrapper className="bg-orange-100 text-orange-600"><ProjectIcon/></MenuIconWrapper>, navIcon: <ProjectIcon/> },
-            { key: 'portfolio', label: 'Portfolio', description: 'Oversee multiple projects', icon: <MenuIconWrapper className="bg-gray-100 text-gray-600"><PortfolioIcon/></MenuIconWrapper>, navIcon: <PortfolioIcon/> },
-            { key: 'planner', label: 'Planner', description: 'Task and milestone planning', icon: <MenuIconWrapper className="bg-blue-100 text-blue-600"><PlannerIcon/></MenuIconWrapper>, navIcon: <PlannerIcon/> },
-            { key: 'schedule', label: 'Schedule', description: 'Detailed project timelines', icon: <MenuIconWrapper className="bg-purple-100 text-purple-600"><ScheduleIcon/></MenuIconWrapper>, navIcon: <ScheduleIcon/> },
+            { key: 'project', label: 'Project', description: 'Core project management', icon: <MenuIconWrapper className="bg-orange-100 text-orange-600"><Briefcase size={20} /></MenuIconWrapper>, navIcon: <ProjectIcon/> },
+            { key: 'portfolio', label: 'Portfolio', description: 'Oversee multiple projects', icon: <MenuIconWrapper className="bg-gray-100 text-gray-600"><FolderKanban size={20} /></MenuIconWrapper>, navIcon: <PortfolioIcon/> },
+            { key: 'planner', label: 'Planner', description: 'Task and milestone planning', icon: <MenuIconWrapper className="bg-blue-100 text-blue-600"><CalendarRange size={20} /></MenuIconWrapper>, navIcon: <PlannerIcon/> },
+            { key: 'schedule', label: 'Schedule', description: 'Detailed project timelines', icon: <MenuIconWrapper className="bg-purple-100 text-purple-600"><Calendar size={20} /></MenuIconWrapper>, navIcon: <ScheduleIcon/> },
         ]
     },
     collaboration: {
         key: 'collaboration', title: 'Collaboration', mainIcon: <CollaborationMainIcon/>,
         items: [
-            { key: 'communication', label: 'Communication', description: 'Team messaging and updates', icon: <MenuIconWrapper className="bg-sky-100 text-sky-600"><CommunicationIcon/></MenuIconWrapper>, navIcon: <CommunicationIcon/> },
-            { key: 'directory', label: 'Directory', description: 'Contact info for stakeholders', icon: <MenuIconWrapper className="bg-sky-100 text-sky-600"><DirectoryIcon/></MenuIconWrapper>, navIcon: <DirectoryIcon/> },
-            { key: 'myTeam', label: 'My Team', description: 'Manage your direct team', icon: <MenuIconWrapper className="bg-sky-100 text-sky-600"><MyTeamIcon/></MenuIconWrapper>, navIcon: <MyTeamIcon/> },
+            { key: 'communication', label: 'Communication', description: 'Team messaging and updates', icon: <MenuIconWrapper className="bg-sky-100 text-sky-600"><MessageSquare size={20} /></MenuIconWrapper>, navIcon: <CommunicationIcon/> },
+            { key: 'directory', label: 'Directory', description: 'Contact info for stakeholders', icon: <MenuIconWrapper className="bg-sky-100 text-sky-600"><BookUser size={20} /></MenuIconWrapper>, navIcon: <DirectoryIcon/> },
+            { key: 'myTeam', label: 'My Team', description: 'Manage your direct team', icon: <MenuIconWrapper className="bg-sky-100 text-sky-600"><Users size={20} /></MenuIconWrapper>, navIcon: <MyTeamIcon/> },
         ]
     },
     quality: {
         key: 'quality', title: 'Quality', mainIcon: <QualityMainIcon/>,
         items: [
-            { key: 'punchlist', label: 'Punchlist', description: 'Track and resolve issues', icon: <MenuIconWrapper className="bg-rose-100 text-rose-600"><PunchlistIcon/></MenuIconWrapper>, navIcon: <PunchlistIcon/> },
-            { key: 'checklist', label: 'Checklist', description: 'Ensure standards are met', icon: <MenuIconWrapper className="bg-rose-100 text-rose-600"><ChecklistIcon/></MenuIconWrapper>, navIcon: <ChecklistIcon/> },
+            { key: 'punchlist', label: 'Punchlist', description: 'Track and resolve issues', icon: <MenuIconWrapper className="bg-rose-100 text-rose-600"><ClipboardList size={20} /></MenuIconWrapper>, navIcon: <PunchlistIcon/> },
+            { key: 'checklist', label: 'Checklist', description: 'Ensure standards are met', icon: <MenuIconWrapper className="bg-rose-100 text-rose-600"><CheckSquare size={20} /></MenuIconWrapper>, navIcon: <ChecklistIcon/> },
         ]
     },
     finance: {
         key: 'finance', title: 'Finance & Cost Control', mainIcon: <FinanceMainIcon/>,
         items: [
-            { key: 'finance', label: 'Finance', description: 'Main financial dashboard', icon: <MenuIconWrapper className="bg-green-100 text-green-600"><FinanceIcon/></MenuIconWrapper>, navIcon: <FinanceIcon/> },
-            { key: 'costs', label: 'Costs', description: 'Track all project expenses', icon: <MenuIconWrapper className="bg-green-100 text-green-600"><CostsIcon/></MenuIconWrapper>, navIcon: <CostsIcon/> },
-            { key: 'contract', label: 'Contract', description: 'Manage contracts and vendors', icon: <MenuIconWrapper className="bg-green-100 text-green-600"><ContractIcon/></MenuIconWrapper>, navIcon: <ContractIcon/> },
-            { key: 'changeOrder', label: 'Change Order', description: 'Handle contract modifications', icon: <MenuIconWrapper className="bg-teal-100 text-teal-600"><ChangeOrderIcon/></MenuIconWrapper>, navIcon: <ChangeOrderIcon/> },
+            { key: 'finance', label: 'Finance', description: 'Main financial dashboard', icon: <MenuIconWrapper className="bg-green-100 text-green-600"><DollarSign size={20} /></MenuIconWrapper>, navIcon: <FinanceIcon/> },
+            { key: 'costs', label: 'Costs', description: 'Track all project expenses', icon: <MenuIconWrapper className="bg-green-100 text-green-600"><CircleDollarSign size={20} /></MenuIconWrapper>, navIcon: <CostsIcon/> },
+            { key: 'contract', label: 'Contract', description: 'Manage contracts and vendors', icon: <MenuIconWrapper className="bg-green-100 text-green-600"><ScrollText size={20} /></MenuIconWrapper>, navIcon: <ContractIcon/> },
+            { key: 'changeOrder', label: 'Change Order', description: 'Handle contract modifications', icon: <MenuIconWrapper className="bg-teal-100 text-teal-600"><FileDiff size={20} /></MenuIconWrapper>, navIcon: <ChangeOrderIcon/> },
         ]
     },
     fieldOps: {
         key: 'fieldOps', title: 'Field & Site Operations', mainIcon: <FieldOpsMainIcon/>,
         items: [
-            { key: 'site', label: 'Site', description: 'Daily site management tools', icon: <MenuIconWrapper className="bg-orange-100 text-orange-600"><SiteIcon/></MenuIconWrapper>, navIcon: <SiteIcon/> },
-            { key: 'field', label: 'Field', description: 'Reports and data collection', icon: <MenuIconWrapper className="bg-amber-100 text-amber-600"><FieldIcon/></MenuIconWrapper>, navIcon: <FieldIcon/> },
-            { key: 'equipment', label: 'Equipment', description: 'Track and manage equipment', icon: <MenuIconWrapper className="bg-amber-100 text-amber-600"><EquipmentIcon/></MenuIconWrapper>, navIcon: <EquipmentIcon/> },
-            { key: 'safety', label: 'Safety', description: 'Compliance and reports', icon: <MenuIconWrapper className="bg-amber-100 text-amber-600"><SafetyIcon/></MenuIconWrapper>, navIcon: <SafetyIcon/> },
-            { key: 'analytics', label: 'Analytics', description: 'Field data and insights', icon: <MenuIconWrapper className="bg-indigo-100 text-indigo-600"><AnalyticsIcon/></MenuIconWrapper>, navIcon: <AnalyticsIcon/> },
-            { key: 'feeds', label: 'Feeds', description: 'Real-time project updates', icon: <MenuIconWrapper className="bg-yellow-100 text-yellow-600"><FeedsIcon/></MenuIconWrapper>, navIcon: <FeedsIcon/> },
+            { key: 'site', label: 'Site', description: 'Daily site management tools', icon: <MenuIconWrapper className="bg-orange-100 text-orange-600"><HardHat size={20} /></MenuIconWrapper>, navIcon: <SiteIcon/> },
+            { key: 'field', label: 'Field', description: 'Reports and data collection', icon: <MenuIconWrapper className="bg-amber-100 text-amber-600"><Tablet size={20} /></MenuIconWrapper>, navIcon: <FieldIcon/> },
+            { key: 'equipment', label: 'Equipment', description: 'Track and manage equipment', icon: <MenuIconWrapper className="bg-amber-100 text-amber-600"><Truck size={20} /></MenuIconWrapper>, navIcon: <EquipmentIcon/> },
+            { key: 'safety', label: 'Safety', description: 'Compliance and reports', icon: <MenuIconWrapper className="bg-amber-100 text-amber-600"><ShieldCheck size={20} /></MenuIconWrapper>, navIcon: <SafetyIcon/> },
+            { key: 'analytics', label: 'Analytics', description: 'Field data and insights', icon: <MenuIconWrapper className="bg-indigo-100 text-indigo-600"><BarChart3 size={20} /></MenuIconWrapper>, navIcon: <AnalyticsIcon/> },
+            { key: 'feeds', label: 'Feeds', description: 'Real-time project updates', icon: <MenuIconWrapper className="bg-yellow-100 text-yellow-600"><Activity size={20} /></MenuIconWrapper>, navIcon: <FeedsIcon/> },
         ]
     },
     documentation: {
         key: 'documentation', title: 'Documentation', mainIcon: <DocumentationMainIcon/>,
         items: [
-            { key: 'document', label: 'Document', description: 'Central document repository', icon: <MenuIconWrapper className="bg-cyan-100 text-cyan-600"><DocumentIcon/></MenuIconWrapper>, navIcon: <DocumentIcon/> },
-            { key: 'plans', label: 'Plans', description: 'View and manage blueprints', icon: <MenuIconWrapper className="bg-blue-100 text-blue-600"><PlansIcon/></MenuIconWrapper>, navIcon: <PlansIcon/> },
-            { key: 'rfi', label: 'RFI', description: 'Manage requests for information', icon: <MenuIconWrapper className="bg-cyan-100 text-cyan-600"><RFIIcon/></MenuIconWrapper>, navIcon: <RFIIcon/> },
-            { key: 'submittals', label: 'Submittals', description: 'Track and approve submittals', icon: <MenuIconWrapper className="bg-cyan-100 text-cyan-600"><SubmittalsIcon/></MenuIconWrapper>, navIcon: <SubmittalsIcon/> },
-            { key: 'specbook', label: 'Specbook', description: 'Review project specifications', icon: <MenuIconWrapper className="bg-cyan-100 text-cyan-600"><SpecbookIcon/></MenuIconWrapper>, navIcon: <SpecbookIcon/> },
+            { key: 'document', label: 'Document', description: 'Central document repository', icon: <MenuIconWrapper className="bg-cyan-100 text-cyan-600"><File size={20} /></MenuIconWrapper>, navIcon: <DocumentIcon/> },
+            { key: 'plans', label: 'Plans', description: 'View and manage blueprints', icon: <MenuIconWrapper className="bg-blue-100 text-blue-600"><Map size={20} /></MenuIconWrapper>, navIcon: <PlansIcon/> },
+            { key: 'rfi', label: 'RFI', description: 'Manage requests for information', icon: <MenuIconWrapper className="bg-cyan-100 text-cyan-600"><FileQuestion size={20} /></MenuIconWrapper>, navIcon: <RFIIcon/> },
+            { key: 'submittals', label: 'Submittals', description: 'Track and approve submittals', icon: <MenuIconWrapper className="bg-cyan-100 text-cyan-600"><FileCheck size={20} /></MenuIconWrapper>, navIcon: <SubmittalsIcon/> },
+            { key: 'specbook', label: 'Specbook', description: 'Review project specifications', icon: <MenuIconWrapper className="bg-cyan-100 text-cyan-600"><BookOpen size={20} /></MenuIconWrapper>, navIcon: <SpecbookIcon/> },
         ]
     },
     more: {
@@ -259,15 +284,11 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, isActive = false, active
 // --- New ProjectSelector Component ---
 
 const ChevronDownIcon = (props: React.ComponentProps<'svg'>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-        <path d="m6 9 6 6 6-6"/>
-    </svg>
+    <ChevronDown size={16} {...props} />
 );
 
 const CheckIcon = (props: React.ComponentProps<'svg'>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" {...props}>
-        <path d="M20 6 9 17l-5-5"/>
-    </svg>
+    <Check size={16} {...props} />
 );
 
 

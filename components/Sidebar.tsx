@@ -80,11 +80,22 @@ interface BookmarkItem {
     navIcon: React.ReactNode;
 }
 
+// Category abbreviations for v3 (matches Header / small-width style)
+const categoryAbbreviations: Record<string, string> = {
+    projectManagement: 'PM',
+    collaboration: 'Team',
+    quality: 'Quality',
+    finance: 'Finance',
+    fieldOps: 'Field',
+    documentation: 'Docs',
+};
+
 interface SidebarProps {
-    version?: 'v1' | 'v2';
+    version?: 'v1' | 'v2' | 'v3';
     bookmarks?: BookmarkItem[];
     onSelect?: (categoryKey: string, subcategoryKey: string) => void;
     onToggleBookmark?: (categoryKey: string, itemKey: string) => void;
+    activeCategory?: any;
 }
 
 // Bookmarks Icon
@@ -94,7 +105,7 @@ const BookmarksIcon = () => (
     </IconWrapper>
 );
 
-const Sidebar: React.FC<SidebarProps> = ({ version = 'v1', bookmarks = [], onSelect, onToggleBookmark }) => {
+const Sidebar: React.FC<SidebarProps> = ({ version = 'v1', bookmarks = [], onSelect, onToggleBookmark, activeCategory }) => {
     const [activeItemKey, setActiveItemKey] = useState('dashboard');
     const [isBookmarksMenuVisible, setBookmarksMenuVisible] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
@@ -137,9 +148,9 @@ const Sidebar: React.FC<SidebarProps> = ({ version = 'v1', bookmarks = [], onSel
     return (
         <aside className="w-[82px] bg-gray-50 border-r border-gray-200 flex flex-col shrink-0">
             <div className="flex-grow flex flex-col gap-2 pt-0">
-                <QuickCreateMenu />
+                {version !== 'v3' && <QuickCreateMenu />}
                 
-                {/* Bookmarks Button - Only for v2 */}
+                {/* Bookmarks Button - Only for v2 (hidden on v3) */}
                 {version === 'v2' && (
                     <div 
                         ref={bookmarksMenuRef}
@@ -185,8 +196,21 @@ const Sidebar: React.FC<SidebarProps> = ({ version = 'v1', bookmarks = [], onSel
                     />
                 ))}
             </div>
-            <div className="py-4 w-[82px]">
-                <LinarcLogo />
+            <div className="py-4 w-[82px] flex justify-center">
+                {version === 'v3' ? (
+                    activeCategory ? (
+                        <div className="flex flex-col items-center gap-1">
+                            <div className="w-8 h-8 flex items-center justify-center text-gray-500">
+                                {activeCategory.navIcon || activeCategory.mainIcon}
+                            </div>
+                            <span className="text-[12px] font-bold text-gray-500 text-center leading-tight px-1">
+                                {categoryAbbreviations[activeCategory.key] ?? activeCategory.title}
+                            </span>
+                        </div>
+                    ) : null
+                ) : (
+                    <LinarcLogo />
+                )}
             </div>
         </aside>
     );

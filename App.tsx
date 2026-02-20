@@ -18,15 +18,24 @@ interface BookmarksData {
 
 const App: React.FC = () => {
   const [pageTitle, setPageTitle] = useState('Documentation / Document');
-  const [navVersion, setNavVersion] = useState<'v1' | 'v2'>('v2');
+  const [navVersion, setNavVersion] = useState<'v1' | 'v2' | 'v3'>('v3');
   const [bookmarksData, setBookmarksData] = useState<BookmarksData | null>(null);
+  const [activeCategory, setActiveCategory] = useState<any>(null);
 
   const toggleVersion = () => {
-    setNavVersion(prev => prev === 'v1' ? 'v2' : 'v1');
+    setNavVersion(prev => {
+      if (prev === 'v1') return 'v2';
+      if (prev === 'v2') return 'v3';
+      return 'v1';
+    });
   };
 
   const handleBookmarksDataChange = (data: BookmarksData) => {
     setBookmarksData(data);
+  };
+
+  const handleCategoryChange = (category: any) => {
+    setActiveCategory(category);
   };
 
   return (
@@ -35,6 +44,7 @@ const App: React.FC = () => {
         onSelectionChange={setPageTitle} 
         version={navVersion}
         onBookmarksDataChange={handleBookmarksDataChange}
+        onCategoryChange={handleCategoryChange}
       />
       <div className="flex flex-grow">
         <Sidebar 
@@ -42,15 +52,16 @@ const App: React.FC = () => {
           bookmarks={bookmarksData?.bookmarks}
           onSelect={bookmarksData?.handleSelect}
           onToggleBookmark={bookmarksData?.toggleBookmark}
+          activeCategory={activeCategory}
         />
         <main className="flex-grow flex flex-col items-center justify-center px-8 py-3 text-gray-900 bg-white">
           <div className="flex flex-col items-center gap-4">
             <button
               onClick={toggleVersion}
               className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200 text-sm font-medium shadow-md"
-              aria-label={`Switch to ${navVersion === 'v1' ? 'Version 2' : 'Version 1'}`}
+              aria-label={`Switch Version`}
             >
-              {navVersion === 'v1' ? 'Switch to V2' : 'Switch to V1'}
+              Switch Version (Current: {navVersion.toUpperCase()})
             </button>
             <div className="text-sm text-gray-500 font-medium">
               Navigation Version: <span className="text-gray-800 font-semibold">{navVersion.toUpperCase()}</span>

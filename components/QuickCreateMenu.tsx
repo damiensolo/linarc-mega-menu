@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
     Plus, 
+    ChevronDown,
     FileDiff, 
     CheckSquare, 
     Truck, 
@@ -32,8 +33,21 @@ const quickCreateItems: QuickCreateItem[] = [
     { label: 'Submittal', icon: FileCheck, type: 'submittal' },
 ];
 
-export const QuickCreateMenu: React.FC = () => {
-    const [isOpen, setIsOpen] = useState(false);
+interface QuickCreateMenuProps {
+    mode?: 'sidebar' | 'header';
+    /** Controlled: when provided, parent controls open state (e.g. to close when mega menu opens) */
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
+}
+
+export const QuickCreateMenu: React.FC<QuickCreateMenuProps> = ({ mode = 'sidebar', open: controlledOpen, onOpenChange }) => {
+    const [internalOpen, setInternalOpen] = useState(false);
+    const isControlled = controlledOpen !== undefined;
+    const isOpen = isControlled ? controlledOpen : internalOpen;
+    const setIsOpen = (value: boolean) => {
+        if (!isControlled) setInternalOpen(value);
+        onOpenChange?.(value);
+    };
     const menuRef = useRef<HTMLDivElement>(null);
 
     // Close on click outside
@@ -72,39 +86,60 @@ export const QuickCreateMenu: React.FC = () => {
         // Placeholder for future modal logic
     };
 
+    const isSidebar = mode === 'sidebar';
+
     return (
         <div className="relative w-full" ref={menuRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className={`relative flex flex-col items-center justify-center gap-1.5 h-[80px] w-full text-xs font-medium transition-colors duration-200 ${isOpen ? 'text-gray-900' : 'text-gray-500 hover:text-gray-800'}`}
+                className={
+                    isSidebar 
+                    ? `relative flex flex-col items-center justify-center gap-1.5 h-[80px] w-full text-xs font-medium transition-colors duration-200 ${isOpen ? 'text-gray-900' : 'text-gray-500 hover:text-gray-800'}`
+                    : `relative flex flex-col items-center justify-center gap-1 w-full transition-colors duration-200 group`
+                }
                 aria-label="Create New"
                 aria-expanded={isOpen}
             >
-                 <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    width="24" 
-                    height="24" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="1.5" 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    className="w-6 h-8"
-                >
-                    <Plus size={24} />
-                </svg>
-                <span>Create</span>
+                {isSidebar ? (
+                    <>
+                        <Plus size={24} strokeWidth={2} className="shrink-0" />
+                        <span>Create</span>
+                    </>
+                ) : (
+                    <>
+                        <div className="relative flex items-center justify-center w-[30.6px] h-[30.6px]">
+                            <div className={`flex items-center justify-center shrink-0 transition-colors duration-200 ${isOpen ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="stroke-current" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"/>
+                                    <path d="M8 12H16"/>
+                                    <path d="M12 8V16"/>
+                                </svg>
+                            </div>
+                            <motion.div 
+                                animate={{ rotate: isOpen ? 180 : 0 }}
+                                transition={{ duration: 0.2 }}
+                                className="absolute -bottom-0.5 -right-3 bg-black rounded-full p-0.5"
+                            >
+                                <ChevronDown size={14} className="text-gray-400 group-hover:text-white" />
+                            </motion.div>
+                        </div>
+                        <span className="text-[12px] font-bold text-white whitespace-nowrap leading-none">Create</span>
+                    </>
+                )}
             </button>
 
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        initial={{ opacity: 0, x: 10, scale: 0.95 }}
-                        animate={{ opacity: 1, x: 0, scale: 1 }}
-                        exit={{ opacity: 0, x: 10, scale: 0.95 }}
+                        initial={isSidebar ? { opacity: 0, x: 10, scale: 0.95 } : { opacity: 0, y: 10, scale: 0.95 }}
+                        animate={isSidebar ? { opacity: 1, x: 0, scale: 1 } : { opacity: 1, y: 0, scale: 1 }}
+                        exit={isSidebar ? { opacity: 0, x: 10, scale: 0.95 } : { opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.15, ease: "easeOut" }}
-                        className="absolute left-full top-0 ml-2 w-64 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden z-50 origin-top-left"
+                        className={
+                            isSidebar
+                            ? "absolute left-full top-0 ml-2 w-64 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden z-50 origin-top-left"
+                            : "absolute top-full left-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden z-50 origin-top-left"
+                        }
                     >
                         {/* Header */}
                         <div className="px-4 py-3 border-b border-gray-100 bg-gray-50/50">

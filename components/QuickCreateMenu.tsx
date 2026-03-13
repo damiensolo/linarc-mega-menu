@@ -1,16 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-    Plus, 
+import {
+    Plus,
     ChevronDown,
-    FileDiff, 
-    CheckSquare, 
-    Truck, 
-    CalendarDays, 
-    Package, 
-    Ticket, 
-    ClipboardList, 
-    FileQuestion, 
+    FileDiff,
+    CheckSquare,
+    Truck,
+    CalendarDays,
+    Package,
+    Ticket,
+    ClipboardList,
+    FileQuestion,
     FileCheck
 } from 'lucide-react';
 
@@ -72,13 +72,13 @@ export const QuickCreateMenu: React.FC<QuickCreateMenuProps> = ({ mode = 'sideba
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.shiftKey && (event.key === 'C' || event.key === 'c')) {
                 event.preventDefault();
-                setIsOpen(prev => !prev);
+                setIsOpen(!isOpen);
             }
         };
 
         document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown);
-    }, []);
+    }, [isOpen]);
 
     const handleQuickCreate = (type: string) => {
         console.log(`Quick Create triggered for: ${type}`);
@@ -89,41 +89,46 @@ export const QuickCreateMenu: React.FC<QuickCreateMenuProps> = ({ mode = 'sideba
     const isSidebar = mode === 'sidebar';
 
     return (
-        <div className="relative w-full" ref={menuRef}>
+        <div className={isSidebar ? "relative w-full" : "relative shrink-0"} ref={menuRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={
-                    isSidebar 
-                    ? `relative flex flex-col items-center justify-center gap-1.5 h-[80px] w-full text-xs font-medium transition-colors duration-200 ${isOpen ? 'text-gray-900' : 'text-gray-500 hover:text-gray-800'}`
-                    : `relative flex flex-col items-center justify-center gap-1 w-full transition-colors duration-200 group`
+                    isSidebar
+                        ? `relative flex flex-col items-center justify-center gap-1.5 h-[80px] w-full text-xs font-medium transition-colors duration-200 ${isOpen ? 'text-gray-900' : 'text-gray-500 hover:text-gray-800'}`
+                        : `relative flex flex-col items-center gap-2 transition-colors duration-200 cursor-pointer group ${isOpen ? 'text-white' : 'text-gray-300 hover:text-white'}`
                 }
                 aria-label="Create New"
                 aria-expanded={isOpen}
             >
                 {isSidebar ? (
                     <>
-                        <Plus size={24} strokeWidth={2} className="shrink-0" />
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-8 shrink-0">
+                            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" />
+                            <path d="M8 12H16" />
+                            <path d="M12 8V16" />
+                        </svg>
                         <span>Create</span>
+                        {isOpen && <div className="absolute right-[-2px] top-1/2 -translate-y-1/2 h-[16px] w-[4px] bg-orange-500 rounded-l-md"></div>}
                     </>
                 ) : (
                     <>
-                        <div className="relative flex items-center justify-center w-[30.6px] h-[30.6px]">
-                            <div className={`flex items-center justify-center shrink-0 transition-colors duration-200 ${isOpen ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}>
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="stroke-current" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"/>
-                                    <path d="M8 12H16"/>
-                                    <path d="M12 8V16"/>
+                        <div className="relative flex items-center justify-center">
+                            <div className={`flex items-center justify-center w-6 h-6 shrink-0`}>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" />
+                                    <path d="M8 12H16" />
+                                    <path d="M12 8V16" />
                                 </svg>
                             </div>
-                            <motion.div 
+                            <motion.div
                                 animate={{ rotate: isOpen ? 180 : 0 }}
                                 transition={{ duration: 0.2 }}
-                                className="absolute -bottom-0.5 -right-3 bg-black rounded-full p-0.5"
+                                className="absolute -bottom-1 -right-2 rounded-full p-0.5"
                             >
-                                <ChevronDown size={14} className="text-gray-400 group-hover:text-white" />
+                                <ChevronDown size={14} className="text-gray-400 group-hover:text-white transition-colors flex flex-col gap-0 justify-center items-center p-0 -mx-[5px] -my-[9px]" />
                             </motion.div>
                         </div>
-                        <span className="text-[12px] font-bold text-white whitespace-nowrap leading-none">Create</span>
+                        <span className={`text-[12px] whitespace-nowrap transition-colors ${isOpen ? 'font-semibold' : 'font-medium'}`}>Create</span>
                     </>
                 )}
             </button>
@@ -137,8 +142,8 @@ export const QuickCreateMenu: React.FC<QuickCreateMenuProps> = ({ mode = 'sideba
                         transition={{ duration: 0.15, ease: "easeOut" }}
                         className={
                             isSidebar
-                            ? "absolute left-full top-0 ml-2 w-64 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden z-50 origin-top-left"
-                            : "absolute top-full left-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden z-50 origin-top-left"
+                                ? "absolute left-full top-0 ml-2 w-64 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden z-50 origin-top-left"
+                                : "absolute top-full left-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden z-50 origin-top-left"
                         }
                     >
                         {/* Header */}
@@ -159,7 +164,7 @@ export const QuickCreateMenu: React.FC<QuickCreateMenuProps> = ({ mode = 'sideba
                                 </button>
                             ))}
                         </div>
-                        
+
                         {/* Footer Hint */}
                         <div className="px-3 py-2 bg-gray-50 border-t border-gray-100 text-[10px] text-gray-400 text-center flex justify-between items-center">
                             <span>Quick Add</span>

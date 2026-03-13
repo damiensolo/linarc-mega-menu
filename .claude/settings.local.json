@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(claude mcp:*)",
+      "Bash(find /c/Users/damie/Projects/ag-linarc-mega-menu -name \"*settings*\" -o -name \"*config*\" -o -name \"*mcp*\" 2>/dev/null | head -20)",
+      "Bash(find /c/Users/damie/AppData -name \"*claude*\" -type f 2>/dev/null | grep -i config | head -5)",
+      "Bash(curl -s -m 5 \"https://mcp.figma.com/mcp\" | head -20 || echo \"Could not connect to Figma MCP server\")",
+      "mcp__figma-remote-mcp__generate_figma_design",
+      "Bash(start \"\" \"http://localhost:3001/#figmacapture=a822a296-62b6-47da-ba1c-21bbacbff8a0&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2Fa822a296-62b6-47da-ba1c-21bbacbff8a0%2Fsubmit&figmadelay=2000\")"
+    ]
+  }
+}
